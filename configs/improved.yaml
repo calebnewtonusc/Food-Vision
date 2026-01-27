@@ -1,0 +1,39 @@
+name: improved
+description: "Improved model - Progressive fine-tuning with discriminative LR and enhanced augmentation"
+
+model:
+  architecture: efficientnet_b2
+  pretrained: true
+  freeze_backbone: false
+  unfreeze_last_blocks: 2
+  num_classes: 3
+  dropout: 0.3
+
+training:
+  epochs: 15
+  batch_size: 32
+  optimizer: adam
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  loss: cross_entropy
+  scheduler: cosine_annealing
+  early_stopping: true
+  patience: 7
+  discriminative_lr:
+    frozen_layers: 0.0
+    mid_layers: 0.00001
+    last_blocks: 0.0001
+    classifier: 0.001
+
+data:
+  train_path: data/processed/train
+  test_path: data/processed/test
+  image_size: 224
+  augmentation: enhanced
+  val_split: 0.0
+  num_workers: 4
+
+reproducibility:
+  seed: 42
+  deterministic: true
+  benchmark: false
