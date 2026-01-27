@@ -50,7 +50,7 @@ A complete ML engineering project demonstrating end-to-end workflow: data prepar
 ## Project Structure
 
 ```
-FoodVisionMini/
+FoodVision/
 ├── src/                   # Core training code
 │   ├── train.py           # Main training script with early stopping
 │   ├── models.py          # EfficientNetB2 model with gradual unfreezing
@@ -105,7 +105,7 @@ FoodVisionMini/
 
 ```bash
 # 1. Clone repository (or cd to project directory)
-cd FoodVisionMini
+cd FoodVision
 
 # 2. Create and activate virtual environment
 python3 -m venv venv
