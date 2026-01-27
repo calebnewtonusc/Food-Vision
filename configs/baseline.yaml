@@ -1,0 +1,35 @@
+name: baseline
+description: "Baseline model - Frozen EfficientNetB2 backbone, train only classifier head"
+
+model:
+  architecture: efficientnet_b2
+  pretrained: true
+  freeze_backbone: true
+  unfreeze_last_blocks: 0
+  num_classes: 3
+  dropout: 0.3
+
+training:
+  epochs: 10
+  batch_size: 32
+  optimizer: adam
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  loss: cross_entropy
+  scheduler: none
+  early_stopping: true
+  patience: 5
+  discriminative_lr: {}
+
+data:
+  train_path: data/processed/train
+  test_path: data/processed/test
+  image_size: 224
+  augmentation: basic
+  val_split: 0.0
+  num_workers: 4
+
+reproducibility:
+  seed: 42
+  deterministic: true
+  benchmark: false
