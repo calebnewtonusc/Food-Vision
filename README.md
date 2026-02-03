@@ -1,6 +1,6 @@
 # FoodVision
 
-Production-ready Food101 image classifier demonstrating end-to-end ML workflow: data preparation, training, evaluation, and full-stack deployment.
+Food101 image classifier demonstrating end-to-end ML workflow: data preparation, training, evaluation, and full-stack deployment.
 
 **🚀 Live Demo:** [https://foodvis.in](https://foodvis.in)
 
@@ -10,8 +10,8 @@ Uses EfficientNetB2 on a 3-class subset of Food101 (pizza, steak, sushi) with Fa
 
 - **Classifies** food images into 3 categories with confidence scores
 - **Trains** with reproducibility (locked seeds, versioned datasets, documented configs)
-- **Evaluates** rigorously (metrics, confusion matrix, calibration, latency profiling)
-- **Deploys** to production (FastAPI on Hugging Face Spaces, React on Vercel)
+- **Evaluates** with multiple metrics (accuracy, F1, confusion matrix, calibration, latency profiling)
+- **Deploys** with FastAPI on Hugging Face Spaces and React on Vercel
 
 ## Core Results
 
