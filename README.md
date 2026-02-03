@@ -35,7 +35,7 @@ Uses EfficientNetB2 on a 3-class subset of Food101 (pizza, steak, sushi) with Fa
 **Backend:**
 - FastAPI 0.104.1
 - Hugging Face Spaces (Docker deployment)
-- CPU inference (~106ms per image)
+- CPU inference (~3.4s per image)
 
 **Frontend:**
 - React 18.2.0
@@ -130,7 +130,7 @@ FoodVision/
 │      (FastAPI Backend)              │
 │  • /predict endpoint                │
 │  • Model inference (CPU)            │
-│  • ~106ms latency                   │
+│  • ~3.4s latency                    │
 │  • Automatic scaling                │
 └─────────────────────────────────────┘
 ```
