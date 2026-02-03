@@ -65,3 +65,14 @@ htmlcov/
 *.egg-info/
 dist/
 build/
+
+# Deployment scripts
+deploy*.sh
+verify*.sh
+DATA.md
+
+# Vercel
+.vercel
+
+# Large assets (except for data preprocessing)
+*.pdf
