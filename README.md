@@ -72,66 +72,6 @@ FoodVision/
     └── vercel.json        # Vercel config
 ```
 
-## Getting Started
-
-### Prerequisites
-- Python 3.11+
-- 8GB RAM minimum
-- 10GB disk space (for dataset)
-- CUDA GPU optional
-
-### Training & Evaluation
-
-```bash
-# 1. Setup
-python3 -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install torch==2.1.0 torchvision==0.16.0
-pip install -r requirements.txt
-
-# 2. Download dataset (~5GB)
-python scripts/download_data.py
-
-# 3. Train baseline model
-python src/train.py --config configs/baseline.yaml
-
-# 4. Train improved model
-python src/train.py --config configs/improved.yaml
-
-# 5. Evaluate
-python scripts/evaluate.py \
-  --model artifacts/improved/best_model.pth \
-  --data-dir data/processed
-```
-
-### Local API Testing
-
-```bash
-# 1. Copy model
-cp artifacts/improved/best_model.pth backend/models/
-
-# 2. Start server
-cd backend/
-pip install -r requirements.txt
-python app.py
-
-# 3. Test endpoints
-curl http://localhost:8000/health
-curl -X POST -F "file=@test_image.jpg" http://localhost:8000/predict
-
-# 4. View docs
-open http://localhost:8000/docs
-```
-
-### Frontend Development
-
-```bash
-cd frontend/
-npm install
-npm start  # Visit http://localhost:3000
-npm run build  # Build for production
-```
-
 ## Training Pipeline
 
 ### Baseline Model
