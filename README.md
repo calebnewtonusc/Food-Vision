@@ -8,7 +8,7 @@ A complete ML engineering project demonstrating end-to-end workflow: data prepar
 
 - **Classifies food images** into 3 categories with confidence scores
 - **Trains with reproducibility** - Locked seeds, versioned datasets, documented configs
-- **Evaluates rigorously** - Metrics, confusion matrix, calibration, latency profiling, failure analysis
+- **Evaluates rigorously** - Metrics, confusion matrix, calibration, latency profiling
 - **Deploys to production** - FastAPI backend on HF Spaces, React frontend on Vercel
 - **Custom domain** - Live at https://foodvis.in
 - **Documents honestly** - Failure modes, limitations, and clear evaluation results
@@ -39,7 +39,7 @@ A complete ML engineering project demonstrating end-to-end workflow: data prepar
 **Backend:**
 - FastAPI 0.104.1
 - Hugging Face Spaces (Docker deployment)
-- CPU inference with <100ms latency
+- CPU inference (~106ms per image, ~3.3s for batched predictions)
 
 **Frontend:**
 - React 18.2.0
@@ -218,28 +218,10 @@ Every run produces a comprehensive evaluation report:
 - Expected Calibration Error (ECE)
 - Overconfident examples (high confidence, wrong prediction)
 
-### Slicing
-Performance breakdown by:
-- Image resolution (low/medium/high)
-- Brightness (dark/normal/bright)
-- Confidence deciles
-
-### Robustness
-Degradation under:
-- Gaussian blur
-- Gaussian noise
-- JPEG compression
-
 ### Performance
 - Model size (MB)
 - Parameter count
 - Inference latency (p50, p95) on CPU
-
-### Failure Cases
-12 curated examples (4 per class):
-- True label, predicted label, confidence
-- Why it failed (similar textures, occlusion, etc.)
-- Link to raw image
 
 ## Production Deployment
 
@@ -298,27 +280,6 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for complete instructions:
 4. Verify end-to-end flow
 
 **Cost:** ~$1/month (domain only, HF Spaces + Vercel free tiers)
-
-## Failure Modes Taxonomy
-
-### 1. Data Failures
-- Class imbalance (if present)
-- Ambiguous images (e.g., pizza with steak topping)
-- Low resolution or poor lighting
-
-### 2. Model/Representation Failures
-- Texture bias (similar colors across classes)
-- Background confusion (plate vs food)
-- Fine-grained differences (raw vs cooked steak)
-
-### 3. Optimization Failures
-- Underfitting (if baseline is too simple)
-- Overfitting (if training accuracy >> test accuracy)
-
-### 4. Systems/Deployment Failures
-- Latency spikes on CPU
-- Out-of-distribution inputs (non-food images)
-- Model size too large for edge deployment
 
 ## Development Status
 
