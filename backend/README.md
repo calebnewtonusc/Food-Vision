@@ -17,7 +17,9 @@ EfficientNetB2-based food classifier that identifies pizza, steak, and sushi fro
 - Training: Progressive fine-tuning with discriminative learning rates
 - Classes: 3 (pizza, steak, sushi)
 - Accuracy: 97.20% on test set
-- Inference latency: ~500ms on CPU (optimizable with TorchScript/quantization)
+- Model Size: 29.65MB (7.7M parameters, 4,227 trainable)
+- Inference latency: ~94ms on GPU (Hugging Face Spaces deployment)
+- Local CPU inference: ~3.3s per image
 
 ## API Endpoints
 
