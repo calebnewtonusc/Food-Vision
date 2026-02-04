@@ -20,9 +20,11 @@ Uses EfficientNetB2 on a 3-class subset of Food101 (pizza, steak, sushi) with Fa
 | **Accuracy** | 94.27% | **97.20%** | >90% |
 | **F1 Score** | N/A | **0.9720** | >0.90 |
 | **ECE (Calibration)** | N/A | **0.0147** | <0.05 |
-| **Model Size** | 30MB | 55MB | <50MB* |
+| **Model Size** | 30MB | **29.65MB** | <50MB ✓ |
+| **Inference (Production)** | N/A | **~94ms** | <200ms ✓ |
+| **Inference (CPU Local)** | N/A | ~3.3s | - |
 
-*Improved model is 55MB due to unfrozen layers (still deployable)
+*Production deployment on Hugging Face Spaces uses GPU acceleration for fast inference*
 
 ## Tech Stack
 
@@ -34,8 +36,9 @@ Uses EfficientNetB2 on a 3-class subset of Food101 (pizza, steak, sushi) with Fa
 
 **Backend:**
 - FastAPI 0.104.1
-- Hugging Face Spaces (Docker deployment)
-- CPU inference (~3.4s per image)
+- Hugging Face Spaces (Docker deployment with GPU acceleration)
+- Production inference: ~94ms per image (GPU)
+- Local CPU inference: ~3.3s per image
 
 **Frontend:**
 - React 18.2.0
