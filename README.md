@@ -4,6 +4,19 @@ Food101 image classifier demonstrating end-to-end ML workflow: data preparation,
 
 **🚀 Live Demo:** [https://foodvis.in](https://foodvis.in)
 
+## ⚠️ Safety Disclaimer
+
+**This is an educational demonstration project only. DO NOT use for:**
+- Food safety decisions (cannot detect spoilage, contamination, or safety issues)
+- Dietary or medical decisions (cannot identify ingredients, allergens, or nutritional content)
+- Production applications without extensive validation
+
+**Limitations:**
+- Only recognizes 3 food categories (pizza, steak, sushi)
+- Model can be wrong and may misclassify images outside its training domain
+- Not validated for real-world safety or medical applications
+- See MODEL_CARD.md for detailed limitations and intended use
+
 ## Project Overview
 
 Uses EfficientNetB2 on a 3-class subset of Food101 (pizza, steak, sushi) with FastAPI backend and React frontend.
@@ -20,11 +33,12 @@ Uses EfficientNetB2 on a 3-class subset of Food101 (pizza, steak, sushi) with Fa
 | **Accuracy** | 94.27% | **97.20%** | >90% |
 | **F1 Score** | N/A | **0.9720** | >0.90 |
 | **ECE (Calibration)** | N/A | **0.0147** | <0.05 |
-| **Model Size** | 30MB | **29.65MB** | <50MB ✓ |
-| **Inference (Production)** | N/A | **~94ms** | <200ms ✓ |
-| **Inference (CPU Local)** | N/A | ~3.3s | - |
+| **Model Size (weights-only)** | 30MB | **29.65MB** | <50MB ✓ |
+| **Model Size (full checkpoint)** | - | **54.56MB** | - |
+| **Inference (CPU Local)** | N/A | **~3.4s** | - |
+| **Inference (GPU - estimated)** | N/A | **<200ms (untested)** | <200ms |
 
-*Production deployment on Hugging Face Spaces uses GPU acceleration for fast inference*
+*Note: GPU inference time is estimated based on typical EfficientNetB2 performance. Production deployment uses CPU inference (~3.4s per image).*
 
 ## Tech Stack
 
@@ -36,9 +50,9 @@ Uses EfficientNetB2 on a 3-class subset of Food101 (pizza, steak, sushi) with Fa
 
 **Backend:**
 - FastAPI 0.104.1
-- Hugging Face Spaces (Docker deployment with GPU acceleration)
-- Production inference: ~94ms per image (GPU)
-- Local CPU inference: ~3.3s per image
+- Hugging Face Spaces (Docker deployment)
+- CPU inference: ~3.4s per image
+- GPU inference: Estimated <200ms (untested)
 
 **Frontend:**
 - React 18.2.0
@@ -132,18 +146,19 @@ FoodVision/
 │      Hugging Face Spaces            │
 │      (FastAPI Backend)              │
 │  • /predict endpoint                │
-│  • Model inference (CPU)            │
-│  • ~3.4s latency                    │
+│  • CPU inference (no GPU)           │
+│  • ~3.4s latency per image          │
 │  • Automatic scaling                │
 └─────────────────────────────────────┘
 ```
 
 ### Backend (FastAPI + HF Spaces)
 - FastAPI 0.104.1
-- Docker deployment on Hugging Face Spaces
+- Docker deployment on Hugging Face Spaces (CPU inference)
 - Lazy model loading on first request
-- CORS configured for custom domain
+- CORS configured for specific origins (no wildcard)
 - Endpoints: `/`, `/health`, `/predict`, `/docs`
+- Inference latency: ~3.4s per image (CPU)
 
 ### Frontend (React + Vercel)
 - React 18.2.0 (Create React App)
@@ -154,6 +169,28 @@ FoodVision/
 
 ### Deployment Cost
 ~$1/month (domain only, HF Spaces + Vercel free tiers)
+
+## Limitations
+
+### Model Limitations
+- **Limited scope**: Only trained on 3 food categories (pizza, steak, sushi) from Food-101 dataset
+- **Domain mismatch**: Performance degrades significantly on foods outside these 3 classes
+- **No safety detection**: Cannot detect food spoilage, contamination, allergens, or safety issues
+- **Visual similarity bias**: May confuse visually similar foods (e.g., raw fish vs. sushi)
+- **Training data bias**: Limited to Food-101 dataset aesthetic (professional food photography)
+
+### Deployment Limitations
+- **CPU inference**: Current deployment uses CPU only (~3.4s latency)
+- **No GPU acceleration**: GPU inference time (<200ms) is estimated but not tested in production
+- **Single-region**: Deployed on HF Spaces with potential geographic latency
+- **Free tier constraints**: Subject to HF Spaces and Vercel free tier limitations
+
+### Ethical Considerations
+- **Not for medical use**: This model should never be used for dietary, nutritional, or medical decisions
+- **Not for safety use**: This model cannot make food safety determinations
+- **Educational only**: Intended for demonstrating ML workflows, not production food classification
+
+For detailed model limitations and intended use cases, see [MODEL_CARD.md](MODEL_CARD.md).
 
 ## License
 
