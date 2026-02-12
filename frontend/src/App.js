@@ -57,6 +57,27 @@ function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <main className="container mx-auto px-4 py-8 max-w-7xl">
+        {/* Safety Disclaimer */}
+        <div className="mb-8 p-6 bg-yellow-50 border-l-4 border-yellow-500 rounded-r-lg shadow-md max-w-5xl mx-auto">
+          <div className="flex items-start">
+            <svg className="w-8 h-8 text-yellow-600 mr-4 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <div>
+              <h3 className="text-lg font-bold text-yellow-900 mb-2">Educational Demo Only - Not for Safety or Medical Decisions</h3>
+              <p className="text-sm text-yellow-800 mb-2">
+                <strong>This is a demonstration project for educational purposes only.</strong> The model is trained on only 3 food categories (pizza, steak, sushi) and has significant limitations:
+              </p>
+              <ul className="text-sm text-yellow-800 space-y-1 ml-4 list-disc">
+                <li><strong>DO NOT use for food safety decisions</strong> - The model cannot detect spoilage, contamination, or safety issues</li>
+                <li><strong>DO NOT use for dietary or medical decisions</strong> - The model cannot identify ingredients, allergens, or nutritional content</li>
+                <li><strong>Limited accuracy</strong> - The model can be wrong and may misclassify images outside its training domain</li>
+                <li><strong>No real-world validation</strong> - This model has not been validated for production use cases</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
         {/* Hero Section */}
         <div className="text-center mb-16 py-8">
           <div className="flex items-center justify-center gap-6 mb-6">

@@ -20,6 +20,7 @@ app = FastAPI(
 )
 
 # CORS middleware - allow requests from frontend
+# SECURITY: Locked down to specific origins only (no wildcard)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -27,11 +28,10 @@ app.add_middleware(
         "https://www.foodvis.in",
         "http://localhost:3000",  # Development
         "http://localhost:5173",  # Vite dev server
-        "*"  # Allow all during development
     ],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["POST", "GET", "OPTIONS"],
+    allow_headers=["Content-Type", "Accept"],
 )
 
 # Global model variable (loaded on startup)
