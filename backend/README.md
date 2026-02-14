@@ -1,6 +1,6 @@
 ---
 title: Food Vision API
-emoji: 🍕
+emoji: 􀬊
 colorFrom: blue
 colorTo: green
 sdk: docker

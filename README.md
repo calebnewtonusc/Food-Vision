@@ -2,9 +2,9 @@
 
 Food101 image classifier demonstrating end-to-end ML workflow: data preparation, training, evaluation, and full-stack deployment.
 
-**🚀 Live Demo:** [https://foodvis.in](https://foodvis.in)
+**􀙭 Live Demo:** [https://foodvis.in](https://foodvis.in)
 
-## ⚠️ Safety Disclaimer
+## 􀇾 Safety Disclaimer
 
 **This is an educational demonstration project only. DO NOT use for:**
 - Food safety decisions (cannot detect spoilage, contamination, or safety issues)
