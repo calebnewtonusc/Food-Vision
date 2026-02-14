@@ -176,7 +176,7 @@ if __name__ == "__main__":
 
     # Plot confusion matrix
     fig = plot_confusion_matrix(cm, class_names, save_path="test_confusion_matrix.png")
-    print("\n✅ Confusion matrix test complete!")
+    print("\n[checkmark.circle] Confusion matrix test complete!")
 
     # Cleanup
     Path("test_confusion_matrix.png").unlink(missing_ok=True)

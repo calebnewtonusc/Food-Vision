@@ -226,4 +226,4 @@ if __name__ == "__main__":
 
     # Cleanup
     example_path.unlink()
-    print("✅ Config test passed!")
+    print("[checkmark.circle] Config test passed!")

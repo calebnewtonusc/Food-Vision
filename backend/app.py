@@ -47,16 +47,16 @@ async def startup_event():
     model_path = Path("models/best_model.pth")
 
     if not model_path.exists():
-        print(f"⚠️  Model not found at {model_path}")
-        print("⚠️  Model will be loaded on first prediction request")
+        print(f"[exclamationmark.triangle]  Model not found at {model_path}")
+        print("[exclamationmark.triangle]  Model will be loaded on first prediction request")
         return
 
     try:
         model = load_model(str(model_path), device="cpu")
-        print("✅ Model loaded successfully!")
+        print("[checkmark.circle] Model loaded successfully!")
     except Exception as e:
-        print(f"❌ Failed to load model: {e}")
-        print("⚠️  Model will be loaded on first prediction request")
+        print(f"[xmark.circle] Failed to load model: {e}")
+        print("[exclamationmark.triangle]  Model will be loaded on first prediction request")
 
 
 @app.get("/")

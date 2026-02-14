@@ -252,8 +252,8 @@ if __name__ == "__main__":
         print(f"Image range: [{images.min():.3f}, {images.max():.3f}]")
         print(f"Label values: {labels.unique()}")
 
-        print("\n✅ Data loading test passed!")
+        print("\n[checkmark.circle] Data loading test passed!")
 
     except Exception as e:
-        print(f"\n❌ Data loading test failed: {e}")
+        print(f"\n[xmark.circle] Data loading test failed: {e}")
         sys.exit(1)

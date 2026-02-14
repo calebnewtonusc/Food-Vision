@@ -208,4 +208,4 @@ if __name__ == "__main__":
     # Print report
     print_latency_report(latency_stats, model_stats)
 
-    print("\n✅ Latency profiling test complete!")
+    print("\n[checkmark.circle] Latency profiling test complete!")

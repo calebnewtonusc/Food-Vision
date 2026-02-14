@@ -70,7 +70,7 @@ class FoodVisionModel(nn.Module):
             param.requires_grad = False
         self._frozen = True
 
-        print("✅ Backbone frozen - only classifier is trainable")
+        print("[checkmark.circle] Backbone frozen - only classifier is trainable")
 
     def unfreeze_backbone(self):
         """Unfreeze all backbone parameters."""
@@ -78,7 +78,7 @@ class FoodVisionModel(nn.Module):
             param.requires_grad = True
         self._frozen = False
 
-        print("✅ Backbone unfrozen - all layers are trainable")
+        print("[checkmark.circle] Backbone unfrozen - all layers are trainable")
 
     def unfreeze_last_blocks(self, num_blocks: int = 2):
         """
@@ -99,7 +99,7 @@ class FoodVisionModel(nn.Module):
             for param in self.backbone.features[i].parameters():
                 param.requires_grad = True
 
-        print(f"✅ Unfroze last {num_blocks} blocks (blocks {total_blocks - num_blocks}-{total_blocks - 1})")
+        print(f"[checkmark.circle] Unfroze last {num_blocks} blocks (blocks {total_blocks - num_blocks}-{total_blocks - 1})")
 
     def get_parameter_groups(self, lr_classifier=1e-3, lr_last_blocks=1e-4, lr_mid_layers=1e-5):
         """
@@ -263,4 +263,4 @@ if __name__ == "__main__":
     print(f"Output shape: {output.shape}")
     print(f"Output range: [{output.min():.3f}, {output.max():.3f}]")
 
-    print("\n✅ All model tests passed!")
+    print("\n[checkmark.circle] All model tests passed!")

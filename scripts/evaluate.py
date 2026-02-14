@@ -115,7 +115,7 @@ def evaluate_model(
 
     model = model.to(device)
     model.eval()
-    print("✅ Model loaded successfully")
+    print("[checkmark.circle] Model loaded successfully")
 
     # Print model summary
     model.print_summary()
@@ -132,7 +132,7 @@ def evaluate_model(
 
     # Collect predictions
     y_true, y_pred, y_probs = collect_predictions(model, test_loader, device)
-    print(f"✅ Collected predictions for {len(y_true)} samples")
+    print(f"[checkmark.circle] Collected predictions for {len(y_true)} samples")
 
     # =========================================================================
     # 1. Classification Metrics
@@ -148,7 +148,7 @@ def evaluate_model(
     metrics_path = output_dir / "metrics.json"
     with open(metrics_path, 'w') as f:
         json.dump(metrics, f, indent=2)
-    print(f"\n✅ Metrics saved to {metrics_path}")
+    print(f"\n[checkmark.circle] Metrics saved to {metrics_path}")
 
     # =========================================================================
     # 2. Confusion Matrix
@@ -167,7 +167,7 @@ def evaluate_model(
     cm_norm_path = output_dir / "confusion_matrix_normalized.png"
     plot_confusion_matrix(cm, CLASS_NAMES, save_path=str(cm_norm_path), normalize=True)
 
-    print(f"✅ Confusion matrices saved to {output_dir}")
+    print(f"[checkmark.circle] Confusion matrices saved to {output_dir}")
 
     # =========================================================================
     # 3. Calibration Analysis
@@ -183,7 +183,7 @@ def evaluate_model(
     reliability_path = output_dir / "reliability_diagram.png"
     plot_reliability_diagram(y_true, y_pred, y_probs, save_path=str(reliability_path))
 
-    print(f"✅ Calibration plots saved to {output_dir}")
+    print(f"[checkmark.circle] Calibration plots saved to {output_dir}")
 
     # =========================================================================
     # 4. Performance Profiling
@@ -215,7 +215,7 @@ def evaluate_model(
     with open(perf_path, 'w') as f:
         json.dump(perf_report, f, indent=2)
 
-    print(f"✅ Performance report saved to {perf_path}")
+    print(f"[checkmark.circle] Performance report saved to {perf_path}")
 
     # =========================================================================
     # 5. Summary Report
@@ -253,7 +253,7 @@ def evaluate_model(
         json.dump(summary, f, indent=2)
 
     print("\n" + "="*70)
-    print("✅ Evaluation Complete!")
+    print("[checkmark.circle] Evaluation Complete!")
     print("="*70)
     print(f"\nAll artifacts saved to: {output_dir}")
     print(f"  - Classification metrics: metrics.json")
