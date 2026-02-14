@@ -2,10 +2,10 @@ import React from 'react';
 
 // Emoji mapping
 const EMOJI_MAP = {
-  pizza: '🍕',
-  steak: '🥩',
-  sushi: '🍣',
-  unknown: '❓'
+  pizza: '􀬊',
+  steak: '􀲃',
+  sushi: '􀲁',
+  unknown: '􀜮'
 };
 
 // Color mapping for confidence levels
@@ -30,7 +30,7 @@ function ResultsDisplay({ result }) {
     <div className="mt-8 bg-white rounded-2xl shadow-lg p-8 animate-fadeIn">
       {/* Main Prediction */}
       <div className="text-center mb-8 pb-8 border-b border-gray-200">
-        <div className="text-7xl mb-4">{EMOJI_MAP[predicted_class] || '❓'}</div>
+        <div className="text-7xl mb-4">{EMOJI_MAP[predicted_class] || '􀜮'}</div>
         {isUnknown ? (
           <>
             <h2 className="text-4xl font-bold text-gray-900 mb-3">

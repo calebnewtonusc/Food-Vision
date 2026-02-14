@@ -5,21 +5,21 @@ function DemoGallery({ onSelectDemo }) {
     {
       id: 'pizza',
       name: 'Pizza',
-      emoji: '🍕',
+      emoji: '􀬊',
       description: 'Classic Italian pizza',
       url: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80'
     },
     {
       id: 'steak',
       name: 'Steak',
-      emoji: '🥩',
+      emoji: '􀲃',
       description: 'Juicy grilled steak',
       url: 'https://images.unsplash.com/photo-1600891964092-4316c288032e?w=600&q=80'
     },
     {
       id: 'sushi',
       name: 'Sushi',
-      emoji: '🍣',
+      emoji: '􀲁',
       description: 'Fresh Japanese sushi',
       url: 'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=600&q=80'
     }
