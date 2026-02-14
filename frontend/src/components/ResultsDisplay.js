@@ -1,11 +1,12 @@
 import React from 'react';
+import { Pizza, Beef, Fish, HelpCircle } from 'lucide-react';
 
-// Emoji mapping
-const EMOJI_MAP = {
-  pizza: '􀬊',
-  steak: '􀲃',
-  sushi: '􀲁',
-  unknown: '􀜮'
+// Icon mapping
+const ICON_MAP = {
+  pizza: Pizza,
+  steak: Beef,
+  sushi: Fish,
+  unknown: HelpCircle
 };
 
 // Color mapping for confidence levels
@@ -30,7 +31,12 @@ function ResultsDisplay({ result }) {
     <div className="mt-8 bg-white rounded-2xl shadow-lg p-8 animate-fadeIn">
       {/* Main Prediction */}
       <div className="text-center mb-8 pb-8 border-b border-gray-200">
-        <div className="text-7xl mb-4">{EMOJI_MAP[predicted_class] || '􀜮'}</div>
+        <div className="mb-4 flex justify-center">
+          {React.createElement(ICON_MAP[predicted_class] || HelpCircle, {
+            size: 96,
+            className: "text-blue-600"
+          })}
+        </div>
         {isUnknown ? (
           <>
             <h2 className="text-4xl font-bold text-gray-900 mb-3">
@@ -66,11 +72,13 @@ function ResultsDisplay({ result }) {
         </h3>
         {Object.entries(probabilities)
           .sort((a, b) => b[1] - a[1])
-          .map(([className, prob]) => (
+          .map(([className, prob]) => {
+            const Icon = ICON_MAP[className] || HelpCircle;
+            return (
             <div key={className} className="space-y-2">
               <div className="flex justify-between items-center text-sm">
                 <span className="font-medium text-gray-700 capitalize flex items-center">
-                  <span className="text-2xl mr-2">{EMOJI_MAP[className]}</span>
+                  <Icon size={24} className="mr-2 text-gray-600" />
                   {className}
                 </span>
                 <span className="text-gray-600 font-semibold">
@@ -87,7 +95,8 @@ function ResultsDisplay({ result }) {
                 />
               </div>
             </div>
-          ))}
+          );
+          })}
       </div>
 
       {/* Inference Time */}
