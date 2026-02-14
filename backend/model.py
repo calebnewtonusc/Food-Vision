@@ -137,15 +137,15 @@ if __name__ == "__main__":
 
     # Create dummy model for testing
     model = FoodVisionModel(num_classes=3)
-    print("✅ Model created successfully")
+    print("[checkmark.circle] Model created successfully")
 
     # Test preprocessing
     dummy_image = Image.new('RGB', (224, 224), color='red')
     tensor = preprocess_image(dummy_image)
-    print(f"✅ Image preprocessed: {tensor.shape}")
+    print(f"[checkmark.circle] Image preprocessed: {tensor.shape}")
 
     # Test prediction
     results = predict(model, dummy_image, device="cpu")
-    print(f"✅ Prediction results: {results}")
+    print(f"[checkmark.circle] Prediction results: {results}")
 
-    print("\n✅ Model tests passed!")
+    print("\n[checkmark.circle] Model tests passed!")

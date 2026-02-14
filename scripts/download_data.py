@@ -149,13 +149,13 @@ def verify_dataset(output_dir, classes, expected_counts):
         for class_name in classes:
             class_dir = output_dir / split / class_name
             if not class_dir.exists():
-                print(f"  ❌ {class_name}: Directory not found!")
+                print(f"  [xmark.circle] {class_name}: Directory not found!")
                 all_valid = False
                 continue
 
             count = len(list(class_dir.glob("*.jpg")))
             expected = expected_counts[split]
-            status = "✅" if count == expected else "⚠️"
+            status = "[checkmark.circle]" if count == expected else "[exclamationmark.triangle]"
             print(f"  {status} {class_name}: {count} images (expected {expected})")
 
             if count != expected:
@@ -163,9 +163,9 @@ def verify_dataset(output_dir, classes, expected_counts):
 
     print("\n" + "="*50)
     if all_valid:
-        print("✅ Dataset verification PASSED!")
+        print("[checkmark.circle] Dataset verification PASSED!")
     else:
-        print("⚠️  Dataset verification found issues")
+        print("[exclamationmark.triangle]  Dataset verification found issues")
     print("="*50)
 
     return all_valid
@@ -199,7 +199,7 @@ def main():
     print("\n[4/4] Verifying dataset...")
     verify_dataset(data_processed_dir, CLASSES, EXPECTED_FILES_PER_CLASS)
 
-    print("\n✅ Dataset preparation complete!")
+    print("\n[checkmark.circle] Dataset preparation complete!")
     print(f"\nProcessed dataset location: {data_processed_dir}")
     print(f"  - Train: {data_processed_dir / 'train'}")
     print(f"  - Test: {data_processed_dir / 'test'}")

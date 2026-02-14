@@ -34,7 +34,7 @@ def set_seed(seed: int, deterministic: bool = True):
     else:
         torch.backends.cudnn.benchmark = True
 
-    print(f"✅ Random seed set to {seed} (deterministic={deterministic})")
+    print(f"[checkmark.circle] Random seed set to {seed} (deterministic={deterministic})")
 
 
 def get_git_commit_hash():
@@ -285,13 +285,13 @@ def train(config_path: str, output_dir: str = None, device: str = None):
                 'config': config.to_dict()
             }, checkpoint_path)
 
-            print(f"  ✅ New best model saved! (Test Acc: {test_acc:.2f}%)")
+            print(f"  [checkmark.circle] New best model saved! (Test Acc: {test_acc:.2f}%)")
         else:
             epochs_without_improvement += 1
 
         # Early stopping
         if config.training.early_stopping and epochs_without_improvement >= config.training.patience:
-            print(f"\n⚠️  Early stopping triggered after {epoch} epochs")
+            print(f"\n[exclamationmark.triangle]  Early stopping triggered after {epoch} epochs")
             print(f"  No improvement for {config.training.patience} epochs")
             break
 

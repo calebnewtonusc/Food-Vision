@@ -262,7 +262,7 @@ if __name__ == "__main__":
 
     # Plot reliability diagram
     fig = plot_reliability_diagram(y_true, y_pred, y_probs, save_path="test_reliability.png")
-    print("\n✅ Calibration test complete!")
+    print("\n[checkmark.circle] Calibration test complete!")
 
     # Cleanup
     Path("test_reliability.png").unlink(missing_ok=True)
