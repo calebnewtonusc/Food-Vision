@@ -1,28 +1,31 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 
 function ImageUploader({ onImageUpload, loading, preview, onReset }) {
   const [dragActive, setDragActive] = useState(false);
+  const [fileError, setFileError] = useState(null);
   const fileInputRef = useRef(null);
 
-  const handleDrag = (e) => {
+  const handleDrag = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
+    if (e.type === 'dragenter' || e.type === 'dragover') {
       setDragActive(true);
-    } else if (e.type === "dragleave") {
-      setDragActive(false);
+    } else if (e.type === 'dragleave') {
+      // Only deactivate if leaving the drop zone itself, not a child
+      if (!e.currentTarget.contains(e.relatedTarget)) {
+        setDragActive(false);
+      }
     }
-  };
+  }, []);
 
-  const handleDrop = (e) => {
+  const handleDrop = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       handleFile(e.dataTransfer.files[0]);
     }
-  };
+  }, []); // eslint-disable-line
 
   const handleChange = (e) => {
     if (e.target.files && e.target.files[0]) {
@@ -31,104 +34,155 @@ function ImageUploader({ onImageUpload, loading, preview, onReset }) {
   };
 
   const handleFile = (file) => {
-    // Validate file type
+    setFileError(null);
     if (!file.type.startsWith('image/')) {
-      alert('Please upload an image file');
+      setFileError('Please upload an image file (JPEG, PNG, WebP, etc.)');
       return;
     }
-
-    // Validate file size (max 10MB)
     if (file.size > 10 * 1024 * 1024) {
-      alert('Image must be less than 10MB');
+      setFileError('Image must be smaller than 10MB. Please compress or resize it first.');
       return;
     }
-
     onImageUpload(file);
   };
 
-  return (
-    <div className="bg-white rounded-2xl shadow-lg p-8">
-      {preview ? (
-        <div className="space-y-4">
+  /* ---- Loading overlay ---- */
+  if (loading && preview) {
+    return (
+      <div className="fv-card relative overflow-hidden">
+        <img
+          src={preview}
+          alt="Analyzing"
+          className="w-full max-h-80 object-contain rounded-xl opacity-40"
+        />
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+          {/* Fork & knife spinner */}
+          <div className="fv-spinner">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-16 h-16">
+              <path d="M12 4v10a6 6 0 0012 0V4" stroke="#e8622a" strokeWidth="3" strokeLinecap="round"/>
+              <path d="M18 4v18M18 22v22" stroke="#e8622a" strokeWidth="3" strokeLinecap="round"/>
+              <path d="M30 4c0 0 6 4 6 10s-6 8-6 8v22" stroke="#e8622a" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          <div className="text-center">
+            <p className="text-lg font-bold text-warm-700">Analyzing your food...</p>
+            <p className="text-sm text-warm-500 mt-1">EfficientNetB2 is thinking</p>
+          </div>
+          <div className="flex gap-1.5 mt-1">
+            <span className="fv-dot" style={{ animationDelay: '0s' }} />
+            <span className="fv-dot" style={{ animationDelay: '0.2s' }} />
+            <span className="fv-dot" style={{ animationDelay: '0.4s' }} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* ---- Preview state (not loading) ---- */
+  if (preview) {
+    return (
+      <div className="fv-card">
+        <div className="relative group">
           <img
             src={preview}
-            alt="Preview"
-            className="w-full max-h-96 object-contain rounded-lg"
+            alt="Food preview"
+            className="w-full max-h-80 object-contain rounded-xl shadow-inner border border-orange-100"
           />
-          {!loading && (
-            <button
-              onClick={onReset}
-              className="w-full py-3 px-6 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
-            >
-              Upload Another Image
-            </button>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent rounded-xl pointer-events-none" />
+        </div>
+        <button
+          onClick={onReset}
+          className="fv-btn-secondary w-full mt-4"
+        >
+          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+          </svg>
+          Try a Different Image
+        </button>
+      </div>
+    );
+  }
+
+  /* ---- Default drop zone ---- */
+  return (
+    <div className="fv-card">
+      <div
+        className={`fv-drop-zone ${dragActive ? 'fv-drop-zone--active' : ''}`}
+        onDragEnter={handleDrag}
+        onDragLeave={handleDrag}
+        onDragOver={handleDrag}
+        onDrop={handleDrop}
+        onClick={() => fileInputRef.current.click()}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => e.key === 'Enter' && fileInputRef.current.click()}
+        aria-label="Upload food image"
+      >
+        {/* Upload icon */}
+        <div className={`fv-upload-icon ${dragActive ? 'fv-upload-icon--active' : ''}`}>
+          <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
+              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+          </svg>
+        </div>
+
+        <div className="mt-4 text-center">
+          {dragActive ? (
+            <>
+              <p className="text-xl font-bold text-orange-600">Drop it here!</p>
+              <p className="text-sm text-orange-400 mt-1">Release to analyze</p>
+            </>
+          ) : (
+            <>
+              <p className="text-lg font-semibold text-gray-700">
+                Drag & drop your food image
+              </p>
+              <p className="text-sm text-gray-500 mt-1">
+                or{' '}
+                <span className="text-orange-500 font-semibold underline underline-offset-2 cursor-pointer hover:text-orange-600">
+                  browse files
+                </span>
+              </p>
+            </>
           )}
         </div>
-      ) : (
-        <div
-          className={`border-2 border-dashed rounded-xl p-12 text-center transition-all ${
-            dragActive
-              ? 'border-blue-500 bg-blue-50'
-              : 'border-gray-300 hover:border-gray-400'
-          }`}
-          onDragEnter={handleDrag}
-          onDragLeave={handleDrag}
-          onDragOver={handleDrag}
-          onDrop={handleDrop}
-        >
-          <svg
-            className="mx-auto h-16 w-16 text-gray-400 mb-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-            />
+
+        <p className="mt-4 text-xs text-gray-400">
+          JPEG, PNG, WebP  &middot;  max 10 MB
+        </p>
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleChange}
+          className="hidden"
+        />
+      </div>
+
+      {/* Inline file error */}
+      {fileError && (
+        <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3 animate-fv-fadein">
+          <svg className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-
-          <h3 className="text-xl font-semibold text-gray-700 mb-2">
-            {loading ? 'Analyzing...' : 'Upload a food image'}
-          </h3>
-
-          <p className="text-gray-500 mb-6">
-            Drag and drop or click to browse
-          </p>
-
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleChange}
-            className="hidden"
-          />
-
-          <button
-            onClick={() => fileInputRef.current.click()}
-            disabled={loading}
-            className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed transition-all font-medium shadow-md hover:shadow-lg transform hover:scale-105"
-          >
-            {loading ? (
-              <span className="flex items-center">
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Analyzing...
-              </span>
-            ) : (
-              'Choose File'
-            )}
-          </button>
-
-          <p className="mt-4 text-xs text-gray-400">
-            Supported formats: JPEG, PNG (Max 10MB)
-          </p>
+          <p className="text-sm text-red-700">{fileError}</p>
         </div>
       )}
+
+      {/* Food types hint */}
+      <div className="mt-5 flex justify-center gap-6">
+        {[
+          { emoji: '🍕', label: 'Pizza' },
+          { emoji: '🥩', label: 'Steak' },
+          { emoji: '🍣', label: 'Sushi' },
+        ].map(({ emoji, label }) => (
+          <div key={label} className="flex flex-col items-center gap-1">
+            <span className="text-2xl">{emoji}</span>
+            <span className="text-xs text-gray-400 font-medium">{label}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
