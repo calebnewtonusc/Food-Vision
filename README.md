@@ -1,201 +1,107 @@
 # FoodVision
 
-Food101 image classifier demonstrating end-to-end ML workflow: data preparation, training, evaluation, and full-stack deployment.
+![PyTorch](https://img.shields.io/badge/PyTorch-2.1-EE4C2C?logo=pytorch&logoColor=white)
+![EfficientNetB2](https://img.shields.io/badge/model-EfficientNetB2-orange)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.104-009688?logo=fastapi&logoColor=white)
+![React](https://img.shields.io/badge/React-18-61dafb?logo=react&logoColor=white)
+![HuggingFace](https://img.shields.io/badge/HF%20Spaces-deployed-FFD21E?logo=huggingface&logoColor=black)
+![Vercel](https://img.shields.io/badge/Vercel-deployed-000000?logo=vercel&logoColor=white)
+![License](https://img.shields.io/badge/license-MIT-yellow)
 
-**Live Demo:** [https://foodvis.in](https://foodvis.in)
+End-to-end food image classifier built on EfficientNetB2, with a FastAPI inference backend on Hugging Face Spaces and a drag-and-drop React frontend — demonstrating the full ML workflow from training to production deployment.
 
-## ⚠️ Safety Disclaimer
+**Live demo:** [foodvis.in](https://foodvis.in)
 
-**This is an educational demonstration project only. DO NOT use for:**
-- Food safety decisions (cannot detect spoilage, contamination, or safety issues)
-- Dietary or medical decisions (cannot identify ingredients, allergens, or nutritional content)
-- Production applications without extensive validation
+> Screenshot
 
-**Limitations:**
-- Only recognizes 3 food categories (pizza, steak, sushi)
-- Model can be wrong and may misclassify images outside its training domain
-- Not validated for real-world safety or medical applications
-- See MODEL_CARD.md for detailed limitations and intended use
+## Features
 
-## Project Overview
+- **97.2% accuracy** on a 3-class Food-101 subset (pizza, steak, sushi) using fine-tuned EfficientNetB2
+- **Drag-and-drop upload** in the React frontend with real-time confidence bar visualization
+- **Calibrated predictions** — Expected Calibration Error (ECE) of 0.0147, meaning confidence scores are reliable
+- **Reproducible training** — deterministic seeds, SHA-256 dataset checksums, YAML configs, and Git commit capture
+- **Custom EvalHarness** — per-class accuracy/F1, confusion matrix, calibration analysis, and CPU latency profiling
+- **Low-cost deployment** — ~$1/month (domain only); HF Spaces and Vercel run on free tiers
 
-Uses EfficientNetB2 on a 3-class subset of Food101 (pizza, steak, sushi) with FastAPI backend and React frontend.
+## Model Performance
 
-- **Classifies** food images into 3 categories with confidence scores
-- **Trains** with reproducibility (locked seeds, versioned datasets, documented configs)
-- **Evaluates** with multiple metrics (accuracy, F1, confusion matrix, calibration, latency profiling)
-- **Deploys** with FastAPI on Hugging Face Spaces and React on Vercel
-
-## Core Results
-
-| Metric | Baseline | Improved | Target |
-|--------|----------|----------|--------|
-| **Accuracy** | 94.27% | **97.20%** | >90% |
-| **F1 Score** | N/A | **0.9720** | >0.90 |
-| **ECE (Calibration)** | N/A | **0.0147** | <0.05 |
-| **Model Size (weights-only)** | 30MB | **29.65MB** | <50MB ✓ |
-| **Model Size (full checkpoint)** | - | **54.56MB** | - |
-| **Inference (CPU Local)** | N/A | **~3.4s** | - |
-| **Inference (GPU - estimated)** | N/A | **<200ms (untested)** | <200ms |
-
-*Note: GPU inference time is estimated based on typical EfficientNetB2 performance. Production deployment uses CPU inference (~3.4s per image).*
+| Metric | Value |
+|---|---|
+| Accuracy | 97.20% |
+| F1 Score (macro) | 0.9720 |
+| ECE (calibration) | 0.0147 |
+| Model size (weights) | 29.65 MB |
+| Inference latency (CPU) | ~3.4s |
 
 ## Tech Stack
 
-**Training & Evaluation:**
-- PyTorch 2.1.0 + torchvision 0.16.0
-- EfficientNetB2 (pretrained on ImageNet)
-- Custom EvalHarness for evaluation
-- scikit-learn, matplotlib, seaborn
+| Layer | Technology |
+|---|---|
+| Model | EfficientNetB2, pretrained on ImageNet, fine-tuned on Food-101 |
+| Training | PyTorch 2.1, torchvision 0.16, cosine annealing, discriminative LR |
+| Evaluation | Custom EvalHarness (metrics, calibration, confusion, latency) |
+| Backend | FastAPI 0.104 on Hugging Face Spaces (Docker, CPU inference) |
+| Frontend | React 18, Tailwind CSS, deployed on Vercel |
 
-**Backend:**
-- FastAPI 0.104.1
-- Hugging Face Spaces (Docker deployment)
-- CPU inference: ~3.4s per image
-- GPU inference: Estimated <200ms (untested)
+## Getting Started
 
-**Frontend:**
-- React 18.2.0
-- Tailwind CSS (via CDN)
-- Vercel deployment
-- Custom domain (foodvis.in)
+### Run the frontend locally
+
+```bash
+cd frontend
+npm install
+REACT_APP_API_URL=https://calebnewtonusc-food-vision-api.hf.space npm start
+```
+
+### Run the backend locally
+
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn app:app --reload
+# API: http://localhost:8000
+# Docs: http://localhost:8000/docs
+```
+
+### Retrain the model
+
+```bash
+# Download dataset
+python scripts/download_data.py
+
+# Baseline (frozen backbone)
+python src/train.py --config configs/baseline.yaml
+
+# Improved (fine-tuned, discriminative LR)
+python src/train.py --config configs/improved.yaml
+
+# Evaluate
+python scripts/evaluate.py --checkpoint artifacts/improved/model.pt
+```
 
 ## Project Structure
 
 ```
 FoodVision/
-├── src/                   # Core training code
-│   ├── train.py           # Main training script
-│   ├── models.py          # EfficientNetB2 model
-│   ├── data.py            # Dataset and data loaders
-│   └── config.py          # Config loader
-├── evalharness/           # Evaluation library
-│   ├── metrics/           # Classification metrics
-│   ├── confusion/         # Confusion matrix
-│   ├── calibration/       # Calibration analysis (ECE)
-│   └── perf/              # Latency profiling
-├── scripts/
-│   ├── download_data.py   # Download Food101 subset
-│   └── evaluate.py        # Run evaluation
-├── configs/
-│   ├── baseline.yaml      # Frozen backbone config
-│   └── improved.yaml      # Fine-tuning config
-├── backend/               # FastAPI server
-│   ├── app.py             # FastAPI application
-│   ├── model.py           # Model inference
-│   └── Dockerfile         # Docker config
-└── frontend/              # React web app
-    ├── src/
-    └── vercel.json        # Vercel config
+├── src/               # Training code (train.py, models.py, data.py, config.py)
+├── configs/           # baseline.yaml and improved.yaml training configs
+├── evalharness/       # Evaluation library (metrics, calibration, confusion, perf)
+├── scripts/           # download_data.py, evaluate.py
+├── backend/           # FastAPI app, model inference, Dockerfile
+└── frontend/          # React app (drag-and-drop UI, confidence visualization)
 ```
 
-## Training Pipeline
+## Deployment Architecture
 
-### Baseline Model
-- EfficientNetB2 (pretrained on ImageNet)
-- Freeze backbone, train classifier head only
-- Dropout(0.3) + Linear(1408 → 3)
-- 10 epochs, Adam (LR=1e-3)
-- Target: 88-92% accuracy
-
-### Improved Model
-- Unfreeze last 2 blocks of EfficientNetB2
-- Discriminative learning rates (1e-5 to 1e-3)
-- 15 epochs, cosine annealing
-- Enhanced augmentation
-- Target: 92-95% accuracy
-
-### Reproducibility
-- Deterministic seeds (Python=42, NumPy=42, PyTorch=42)
-- Dataset SHA-256 checksums
-- Locked class order (pizza=0, steak=1, sushi=2)
-- Config YAML saved with every run
-- Git commit hash captured
-
-## Evaluation
-
-### Metrics
-- Accuracy (overall and per-class)
-- F1 (macro and per-class)
-- Confusion matrix with top confusions
-
-### Calibration
-- Confidence histogram
-- Expected Calibration Error (ECE)
-- Overconfident examples
-
-### Performance
-- Model size (MB)
-- Parameter count
-- Inference latency (p50, p95) on CPU
-
-## Production Deployment
-
-### Architecture
 ```
-┌─────────────────────────────────────┐
-│        foodvis.in                   │
-│    (Vercel - React Frontend)        │
-│  • Drag-and-drop upload             │
-│  • Real-time predictions            │
-│  • Confidence visualization         │
-└────────────┬────────────────────────┘
-             │ HTTPS/CORS
-             ▼
-┌─────────────────────────────────────┐
-│      Hugging Face Spaces            │
-│      (FastAPI Backend)              │
-│  • /predict endpoint                │
-│  • CPU inference (no GPU)           │
-│  • ~3.4s latency per image          │
-│  • Automatic scaling                │
-└─────────────────────────────────────┘
+foodvis.in  (Vercel — React frontend)
+     |
+     | HTTPS
+     v
+Hugging Face Spaces  (FastAPI backend — CPU inference)
+  /predict  /health  /docs
 ```
 
-### Backend (FastAPI + HF Spaces)
-- FastAPI 0.104.1
-- Docker deployment on Hugging Face Spaces (CPU inference)
-- Lazy model loading on first request
-- CORS configured for specific origins (no wildcard)
-- Endpoints: `/`, `/health`, `/predict`, `/docs`
-- Inference latency: ~3.4s per image (CPU)
+## Author
 
-### Frontend (React + Vercel)
-- React 18.2.0 (Create React App)
-- Tailwind CSS styling
-- Auto-deploy from GitHub
-- Custom domain via GoDaddy DNS
-- Features: drag-and-drop upload, real-time predictions, confidence bars
-
-### Deployment Cost
-~$1/month (domain only, HF Spaces + Vercel free tiers)
-
-## Limitations
-
-### Model Limitations
-- **Limited scope**: Only trained on 3 food categories (pizza, steak, sushi) from Food-101 dataset
-- **Domain mismatch**: Performance degrades significantly on foods outside these 3 classes
-- **No safety detection**: Cannot detect food spoilage, contamination, allergens, or safety issues
-- **Visual similarity bias**: May confuse visually similar foods (e.g., raw fish vs. sushi)
-- **Training data bias**: Limited to Food-101 dataset aesthetic (professional food photography)
-
-### Deployment Limitations
-- **CPU inference**: Current deployment uses CPU only (~3.4s latency)
-- **No GPU acceleration**: GPU inference time (<200ms) is estimated but not tested in production
-- **Single-region**: Deployed on HF Spaces with potential geographic latency
-- **Free tier constraints**: Subject to HF Spaces and Vercel free tier limitations
-
-### Ethical Considerations
-- **Not for medical use**: This model should never be used for dietary, nutritional, or medical decisions
-- **Not for safety use**: This model cannot make food safety determinations
-- **Educational only**: Intended for demonstrating ML workflows, not production food classification
-
-For detailed model limitations and intended use cases, see [MODEL_CARD.md](MODEL_CARD.md).
-
-## License
-
-MIT
-
----
-
-Part of the 2026 ML Engineering Portfolio
+**Caleb Newton** — [calebnewton.me](https://calebnewton.me) | [GitHub](https://github.com/calebnewtonusc)
