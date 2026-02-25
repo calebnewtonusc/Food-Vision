@@ -8,7 +8,7 @@
 ![Vercel](https://img.shields.io/badge/Vercel-deployed-000000?logo=vercel&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-yellow)
 
-End-to-end food image classifier built on EfficientNetB2, with a FastAPI inference backend on Hugging Face Spaces and a drag-and-drop React frontend — demonstrating the full ML workflow from training to production deployment.
+End-to-end food image classifier built on EfficientNetB2, with a FastAPI inference backend on Hugging Face Spaces and a drag-and-drop React frontend. Demonstrates the full ML workflow from training to production deployment.
 
 **Live demo:** [foodvis.in](https://foodvis.in)
 
@@ -18,10 +18,10 @@ End-to-end food image classifier built on EfficientNetB2, with a FastAPI inferen
 
 - **97.2% accuracy** on a 3-class Food-101 subset (pizza, steak, sushi) using fine-tuned EfficientNetB2
 - **Drag-and-drop upload** in the React frontend with real-time confidence bar visualization
-- **Calibrated predictions** — Expected Calibration Error (ECE) of 0.0147, meaning confidence scores are reliable
-- **Reproducible training** — deterministic seeds, SHA-256 dataset checksums, YAML configs, and Git commit capture
-- **Custom EvalHarness** — per-class accuracy/F1, confusion matrix, calibration analysis, and CPU latency profiling
-- **Low-cost deployment** — ~$1/month (domain only); HF Spaces and Vercel run on free tiers
+- **Calibrated predictions**: Expected Calibration Error (ECE) of 0.0147, meaning confidence scores are reliable
+- **Reproducible training**: deterministic seeds, SHA-256 dataset checksums, YAML configs, and Git commit capture
+- **Custom EvalHarness**: per-class accuracy/F1, confusion matrix, calibration analysis, and CPU latency profiling
+- **Low-cost deployment**: ~$1/month (domain only); HF Spaces and Vercel run on free tiers
 
 ## Model Performance
 
@@ -94,14 +94,14 @@ FoodVision/
 ## Deployment Architecture
 
 ```
-foodvis.in  (Vercel — React frontend)
+foodvis.in  (Vercel, React frontend)
      |
      | HTTPS
      v
-Hugging Face Spaces  (FastAPI backend — CPU inference)
+Hugging Face Spaces  (FastAPI backend, CPU inference)
   /predict  /health  /docs
 ```
 
 ## Author
 
-**Caleb Newton** — [calebnewton.me](https://calebnewton.me) | [GitHub](https://github.com/calebnewtonusc)
+**Caleb Newton** | [calebnewton.me](https://calebnewton.me) | [GitHub](https://github.com/calebnewtonusc)

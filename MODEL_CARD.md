@@ -291,6 +291,6 @@ Based on evaluation and testing, the model is known to fail in these scenarios:
 ---
 
 **References:**
-- Food-101 Dataset: Bossard, Lukas et al. "Food-101 – Mining Discriminative Components with Random Forests." ECCV 2014.
+- Food-101 Dataset: Bossard, Lukas et al. "Food-101: Mining Discriminative Components with Random Forests." ECCV 2014.
 - EfficientNet: Tan, Mingxing, and Quoc V. Le. "EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks." ICML 2019.
 - Model Cards: Mitchell, Margaret et al. "Model Cards for Model Reporting." FAT* 2019.
