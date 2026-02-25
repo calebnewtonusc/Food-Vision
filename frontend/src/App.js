@@ -5,32 +5,58 @@ import DemoGallery from './components/DemoGallery';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
-/* Stat card for the performance section */
-function StatCard({ value, label, color }) {
+/* ------------------------------------------------------------------ */
+/*  Stat card — Apple card style, all orange accent                    */
+/* ------------------------------------------------------------------ */
+function StatCard({ value, label, sublabel }) {
   return (
     <div className="fv-stat-card">
-      <div className={`text-4xl md:text-5xl font-extrabold ${color} mb-1 tabular-nums`}>
-        {value}
-      </div>
-      <div className="text-xs text-gray-500 font-semibold uppercase tracking-widest">
-        {label}
-      </div>
+      <div className="fv-stat-value">{value}</div>
+      <div className="fv-stat-label">{label}</div>
+      {sublabel && (
+        <div style={{ fontSize: 11, color: '#aeaeb2', marginTop: 3 }}>{sublabel}</div>
+      )}
     </div>
   );
 }
 
+/* ------------------------------------------------------------------ */
+/*  Inline tech pill                                                    */
+/* ------------------------------------------------------------------ */
+function TechPill({ children }) {
+  return (
+    <span style={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      padding: '2px 10px',
+      background: 'rgba(255,149,0,0.10)',
+      color: '#c47000',
+      borderRadius: 980,
+      fontSize: 12,
+      fontWeight: 600,
+      marginRight: 6,
+      marginBottom: 6,
+    }}>
+      {children}
+    </span>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  App                                                                 */
+/* ------------------------------------------------------------------ */
 function App() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [disclaimerDismissed, setDisclaimerDismissed] = useState(false);
 
   const handleImageUpload = async (file) => {
     setLoading(true);
     setError(null);
     setResult(null);
 
-    // Show preview immediately
     const reader = new FileReader();
     reader.onloadend = () => setPreview(reader.result);
     reader.readAsDataURL(file);
@@ -69,56 +95,88 @@ function App() {
   };
 
   return (
-    <div className="fv-app-bg min-h-screen">
-      <main className="container mx-auto px-4 py-8 max-w-6xl">
+    <div className="fv-app-bg">
+      <main style={{ maxWidth: 1100, margin: '0 auto', padding: '0 16px 80px' }}>
 
         {/* ---- Disclaimer banner ---- */}
-        <div className="fv-disclaimer mb-8 max-w-5xl mx-auto">
-          <div className="flex items-start gap-3">
-            <svg className="w-6 h-6 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-            <div>
-              <p className="text-sm font-bold text-amber-900">Educational Demo Only — Not for Safety or Medical Decisions</p>
-              <p className="text-xs text-amber-800 mt-0.5">
-                Trained on 3 categories (pizza, steak, sushi). Cannot detect spoilage, allergens, or nutritional content.
-                Model accuracy may vary on out-of-distribution images.
-              </p>
+        {!disclaimerDismissed && (
+          <div className="fv-disclaimer animate-fv-fadein" style={{ maxWidth: 900, margin: '20px auto 0' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+              <svg style={{ width: 16, height: 16, color: '#FF9500', flexShrink: 0, marginTop: 2 }}
+                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <div style={{ flex: 1 }}>
+                <span style={{ fontSize: 13, fontWeight: 600, color: '#1c1c1e' }}>
+                  Educational demo only.
+                </span>
+                <span style={{ fontSize: 13, color: '#8e8e93', marginLeft: 6 }}>
+                  Trained on 3 categories (pizza, steak, sushi). Not for safety or medical decisions.
+                </span>
+              </div>
+              <button
+                onClick={() => setDisclaimerDismissed(true)}
+                style={{
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  color: '#8e8e93', padding: '0 2px', flexShrink: 0,
+                  display: 'flex', alignItems: 'center',
+                }}
+                aria-label="Dismiss"
+              >
+                <svg style={{ width: 14, height: 14 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
           </div>
-        </div>
+        )}
 
         {/* ---- Hero ---- */}
-        <div className="text-center mb-14 pt-2">
-          <div className="flex items-center justify-center gap-5 mb-4">
+        <div style={{ textAlign: 'center', padding: '56px 0 52px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 20, marginBottom: 16 }}>
             <img
               src="/foodvision-logo.png"
               alt="Food Vision Logo"
-              className="w-24 h-24 md:w-32 md:h-32 drop-shadow-lg"
+              style={{ width: 80, height: 80, objectFit: 'contain', filter: 'drop-shadow(0 4px 12px rgba(255,149,0,0.22))' }}
             />
-            <div className="text-left">
-              <h1 className="text-5xl md:text-6xl font-extrabold fv-hero-title leading-none">
-                Food Vision
+            <div style={{ textAlign: 'left' }}>
+              <h1 className="fv-hero-title" style={{ fontSize: 'clamp(2.75rem, 6vw, 4.25rem)', lineHeight: 1.0, margin: 0 }}>
+                Food<span className="fv-hero-title-accent"> Vision</span>
               </h1>
-              <p className="text-base md:text-lg text-warm-600 mt-1 font-medium tracking-wide">
+              <p style={{ fontSize: 16, color: '#8e8e93', margin: '6px 0 0', fontWeight: 500, letterSpacing: -0.1 }}>
                 AI-Powered Food Classifier
               </p>
             </div>
           </div>
-          <p className="text-gray-500 text-base max-w-xl mx-auto mt-2">
-            Drop any food photo and our EfficientNetB2 model identifies it in milliseconds with&nbsp;
-            <span className="font-bold text-orange-600">97.20% accuracy</span>.
+
+          <p style={{
+            fontSize: 16,
+            color: '#3a3a3c',
+            maxWidth: 480,
+            margin: '0 auto',
+            lineHeight: 1.55,
+            letterSpacing: -0.1,
+          }}>
+            Drop any food photo and our EfficientNetB2 model classifies it in milliseconds
+            — with{' '}
+            <span style={{ color: '#FF9500', fontWeight: 700 }}>97.20% accuracy</span>.
           </p>
         </div>
 
         {/* ---- Try It / Examples ---- */}
-        <div className="mb-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-start">
-
+        <div style={{ marginBottom: 72 }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: 32,
+            alignItems: 'start',
+          }}>
             {/* Left: Uploader + Results */}
             <div>
-              <h2 className="fv-section-label mb-5">Try It Now</h2>
+              <div style={{ marginBottom: 12 }}>
+                <span className="fv-section-label">Try It Now</span>
+              </div>
 
               <ImageUploader
                 onImageUpload={handleImageUpload}
@@ -129,23 +187,32 @@ function App() {
 
               {/* API error state */}
               {error && !loading && (
-                <div className="mt-4 fv-error-card animate-fv-fadein">
-                  <div className="flex items-start gap-3">
-                    <svg className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="fv-error-card animate-fv-fadein" style={{ marginTop: 12 }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                    <svg style={{ width: 16, height: 16, color: '#FF3B30', flexShrink: 0, marginTop: 2 }}
+                      fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                         d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <div>
-                      <p className="text-sm font-bold text-red-800">Something went wrong</p>
-                      <p className="text-sm text-red-700 mt-0.5">{error}</p>
-                      <p className="text-xs text-red-500 mt-1">
+                      <p style={{ fontSize: 13, fontWeight: 700, color: '#c0392b', margin: 0 }}>
+                        Something went wrong
+                      </p>
+                      <p style={{ fontSize: 13, color: '#c0392b', margin: '3px 0 0', opacity: 0.85 }}>
+                        {error}
+                      </p>
+                      <p style={{ fontSize: 11, color: '#c0392b', margin: '4px 0 0', opacity: 0.6 }}>
                         Make sure the API server is running, then try again.
                       </p>
                     </div>
                   </div>
                   <button
                     onClick={handleReset}
-                    className="mt-3 text-xs font-semibold text-red-600 hover:text-red-800 underline underline-offset-2"
+                    style={{
+                      marginTop: 10, fontSize: 12, fontWeight: 600,
+                      color: '#FF3B30', background: 'none', border: 'none',
+                      cursor: 'pointer', textDecoration: 'underline', padding: 0,
+                    }}
                   >
                     Clear and try again
                   </button>
@@ -160,8 +227,10 @@ function App() {
 
             {/* Right: Demo gallery */}
             <div>
-              <h2 className="fv-section-label mb-2">Quick Examples</h2>
-              <p className="text-sm text-gray-500 mb-5">
+              <div style={{ marginBottom: 8 }}>
+                <span className="fv-section-label">Quick Examples</span>
+              </div>
+              <p style={{ fontSize: 13, color: '#8e8e93', marginBottom: 16, marginTop: 4 }}>
                 No image handy? Click a card to classify a sample photo.
               </p>
               <DemoGallery onSelectDemo={handleImageUpload} />
@@ -169,90 +238,151 @@ function App() {
           </div>
         </div>
 
-        {/* ---- Performance ---- */}
-        <div className="mb-20">
-          <h2 className="fv-section-label text-center mb-2">Model Performance</h2>
-          <p className="text-center text-sm text-gray-500 mb-10 max-w-2xl mx-auto">
-            Evaluated on 750 held-out test images using progressive fine-tuning and
-            discriminative learning rates.
-          </p>
+        {/* ---- Performance Stats ---- */}
+        <div style={{ marginBottom: 72 }}>
+          <div style={{ textAlign: 'center', marginBottom: 32 }}>
+            <span className="fv-section-label">Model Performance</span>
+            <p style={{ fontSize: 14, color: '#8e8e93', marginTop: 6, maxWidth: 480, marginLeft: 'auto', marginRight: 'auto' }}>
+              Evaluated on 750 held-out test images using progressive fine-tuning and
+              discriminative learning rates.
+            </p>
+          </div>
 
           {/* Stat cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-12">
-            <StatCard value="97.20%" label="Accuracy" color="text-orange-600" />
-            <StatCard value="100%" label="Top-3" color="text-emerald-600" />
-            <StatCard value="0.972" label="F1 Score" color="text-rose-600" />
-            <StatCard value="0.015" label="ECE" color="text-violet-600" />
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+            gap: 12,
+            maxWidth: 700,
+            margin: '0 auto 48px',
+          }}>
+            <StatCard value="97.20%" label="Accuracy" sublabel="Top-1" />
+            <StatCard value="100%" label="Top-3" sublabel="All classes" />
+            <StatCard value="0.972" label="F1 Score" sublabel="Weighted avg" />
+            <StatCard value="0.015" label="ECE" sublabel="Calibration error" />
           </div>
 
           {/* Visualizations */}
-          <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: 16,
+            maxWidth: 860,
+            margin: '0 auto',
+          }}>
             <div className="fv-viz-card">
-              <h3 className="text-base font-bold text-gray-800 mb-4 text-center">
+              <h3 style={{
+                fontSize: 14, fontWeight: 700, color: '#1c1c1e',
+                marginBottom: 16, textAlign: 'center', letterSpacing: -0.2,
+              }}>
                 Confusion Matrix
               </h3>
               <img
                 src="/confusion_matrix.png"
                 alt="Confusion Matrix"
-                className="w-full h-auto rounded-xl"
+                style={{ width: '100%', height: 'auto', borderRadius: 12 }}
               />
-              <p className="text-xs text-gray-400 mt-3 text-center">
+              <p style={{ fontSize: 11, color: '#aeaeb2', marginTop: 10, textAlign: 'center' }}>
                 Predictions vs. true labels across all 3 classes
               </p>
             </div>
             <div className="fv-viz-card">
-              <h3 className="text-base font-bold text-gray-800 mb-4 text-center">
+              <h3 style={{
+                fontSize: 14, fontWeight: 700, color: '#1c1c1e',
+                marginBottom: 16, textAlign: 'center', letterSpacing: -0.2,
+              }}>
                 Calibration Analysis
               </h3>
               <img
                 src="/reliability_diagram.png"
                 alt="Reliability Diagram"
-                className="w-full h-auto rounded-xl"
+                style={{ width: '100%', height: 'auto', borderRadius: 12 }}
               />
-              <p className="text-xs text-gray-400 mt-3 text-center">
-                Well-calibrated — ECE of 0.0147
+              <p style={{ fontSize: 11, color: '#aeaeb2', marginTop: 10, textAlign: 'center' }}>
+                Well-calibrated model — ECE of 0.0147
               </p>
             </div>
           </div>
         </div>
 
         {/* ---- Technical Details ---- */}
-        <div className="max-w-3xl mx-auto mb-20">
+        <div style={{ maxWidth: 720, margin: '0 auto 72px' }}>
           <div className="fv-tech-card">
-            <h2 className="text-xl font-extrabold text-gray-900 mb-5 text-center">
+            <h2 style={{
+              fontSize: 18, fontWeight: 800, color: '#1c1c1e',
+              marginBottom: 20, textAlign: 'center', letterSpacing: -0.4,
+            }}>
               Technical Details
             </h2>
-            <div className="grid sm:grid-cols-2 gap-6 text-sm text-gray-700">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 24 }}>
               <div>
-                <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-orange-500 inline-block" />
+                <h3 style={{
+                  fontSize: 12, fontWeight: 700, color: '#8e8e93',
+                  textTransform: 'uppercase', letterSpacing: 0.5,
+                  marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6,
+                }}>
+                  <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#FF9500', display: 'inline-block' }} />
                   Architecture
                 </h3>
-                <ul className="space-y-1 text-gray-600">
-                  <li>EfficientNetB2 backbone (ImageNet pre-trained)</li>
-                  <li>Progressive fine-tuning strategy</li>
-                  <li>Discriminative learning rates</li>
-                  <li>3-class classifier head</li>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                  {[
+                    'EfficientNetB2 backbone',
+                    'ImageNet pre-trained',
+                    'Progressive fine-tuning',
+                    'Discriminative learning rates',
+                    '3-class classifier head',
+                  ].map((item) => (
+                    <li key={item} style={{
+                      fontSize: 13, color: '#3a3a3c', paddingBottom: 6,
+                      display: 'flex', alignItems: 'baseline', gap: 7,
+                    }}>
+                      <span style={{ color: '#FF9500', fontSize: 10, flexShrink: 0 }}>&#9679;</span>
+                      {item}
+                    </li>
+                  ))}
                 </ul>
               </div>
               <div>
-                <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-rose-500 inline-block" />
+                <h3 style={{
+                  fontSize: 12, fontWeight: 700, color: '#8e8e93',
+                  textTransform: 'uppercase', letterSpacing: 0.5,
+                  marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6,
+                }}>
+                  <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#FF9500', display: 'inline-block' }} />
                   Training Details
                 </h3>
-                <ul className="space-y-1 text-gray-600">
-                  <li>750 train images per class</li>
-                  <li>250 test images per class</li>
-                  <li>Enhanced data augmentation</li>
-                  <li>70% confidence threshold</li>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                  {[
+                    '750 train images per class',
+                    '250 test images per class',
+                    'Enhanced data augmentation',
+                    '70% confidence threshold',
+                    'PyTorch + torchvision',
+                  ].map((item) => (
+                    <li key={item} style={{
+                      fontSize: 13, color: '#3a3a3c', paddingBottom: 6,
+                      display: 'flex', alignItems: 'baseline', gap: 7,
+                    }}>
+                      <span style={{ color: '#FF9500', fontSize: 10, flexShrink: 0 }}>&#9679;</span>
+                      {item}
+                    </li>
+                  ))}
                 </ul>
+              </div>
+            </div>
+
+            <div style={{ marginTop: 20, borderTop: '1px solid rgba(60,60,67,0.12)', paddingTop: 16 }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                {['PyTorch', 'EfficientNetB2', 'FastAPI', 'React', 'Vercel'].map((t) => (
+                  <TechPill key={t}>{t}</TechPill>
+                ))}
               </div>
             </div>
           </div>
         </div>
 
         {/* ---- Footer ---- */}
-        <div className="flex flex-col items-center pb-10">
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingBottom: 16 }}>
           <a
             href="https://calebnewton.me"
             target="_blank"
@@ -262,14 +392,17 @@ function App() {
             <img
               src="/caleb-usc.jpg"
               alt="Caleb Newton at USC"
-              className="w-11 h-11 rounded-full object-cover border-2 border-orange-300 shadow"
-              style={{ objectPosition: 'center 30%' }}
+              style={{
+                width: 36, height: 36, borderRadius: '50%',
+                objectFit: 'cover', objectPosition: 'center 30%',
+                border: '2px solid rgba(255,149,0,0.3)',
+              }}
             />
-            <div className="flex flex-col items-start gap-0.5">
-              <span className="text-xs text-gray-400 uppercase tracking-widest font-semibold">
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 1 }}>
+              <span style={{ fontSize: 10, color: '#aeaeb2', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>
                 Built by
               </span>
-              <span className="text-sm text-gray-800 font-bold">
+              <span style={{ fontSize: 14, color: '#1c1c1e', fontWeight: 700, letterSpacing: -0.2 }}>
                 Caleb Newton
               </span>
             </div>

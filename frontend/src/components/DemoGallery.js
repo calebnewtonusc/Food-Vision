@@ -7,9 +7,6 @@ const DEMO_IMAGES = [
     emoji: '🍕',
     description: 'Classic Neapolitan pizza',
     url: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80',
-    accent: 'from-orange-400 to-red-400',
-    hoverBorder: 'hover:border-orange-400',
-    activeBg: 'bg-orange-50',
   },
   {
     id: 'steak',
@@ -17,9 +14,6 @@ const DEMO_IMAGES = [
     emoji: '🥩',
     description: 'Juicy ribeye steak',
     url: 'https://images.unsplash.com/photo-1600891964092-4316c288032e?w=600&q=80',
-    accent: 'from-red-600 to-rose-500',
-    hoverBorder: 'hover:border-red-400',
-    activeBg: 'bg-red-50',
   },
   {
     id: 'sushi',
@@ -27,9 +21,6 @@ const DEMO_IMAGES = [
     emoji: '🍣',
     description: 'Fresh Japanese sushi',
     url: 'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=600&q=80',
-    accent: 'from-pink-500 to-fuchsia-500',
-    hoverBorder: 'hover:border-pink-400',
-    activeBg: 'bg-pink-50',
   },
 ];
 
@@ -38,7 +29,7 @@ function DemoGallery({ onSelectDemo }) {
   const [errorId, setErrorId] = useState(null);
 
   const handleDemoClick = async (demo) => {
-    if (loadingId) return; // prevent double-click
+    if (loadingId) return;
     setLoadingId(demo.id);
     setErrorId(null);
 
@@ -57,7 +48,7 @@ function DemoGallery({ onSelectDemo }) {
   };
 
   return (
-    <div className="space-y-4">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       {DEMO_IMAGES.map((demo) => {
         const isLoading = loadingId === demo.id;
         const isError = errorId === demo.id;
@@ -67,59 +58,114 @@ function DemoGallery({ onSelectDemo }) {
             key={demo.id}
             onClick={() => handleDemoClick(demo)}
             disabled={!!loadingId}
-            className={`
-              w-full group relative rounded-2xl overflow-hidden
-              border-2 border-transparent ${demo.hoverBorder}
-              shadow-md hover:shadow-xl
-              transition-all duration-300
-              disabled:cursor-not-allowed disabled:opacity-70
-              focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2
-              ${isError ? 'border-red-400' : ''}
-            `}
             aria-label={`Try ${demo.name} example`}
+            style={{
+              width: '100%',
+              position: 'relative',
+              borderRadius: 16,
+              overflow: 'hidden',
+              border: isError
+                ? '2px solid rgba(255,59,48,0.5)'
+                : '2px solid transparent',
+              boxShadow: '0 1px 6px rgba(0,0,0,0.08)',
+              cursor: loadingId ? 'not-allowed' : 'pointer',
+              opacity: loadingId && !isLoading ? 0.6 : 1,
+              background: 'none',
+              padding: 0,
+              transition: 'transform 0.2s, box-shadow 0.2s, border-color 0.2s',
+              outline: 'none',
+            }}
+            onMouseEnter={(e) => {
+              if (!loadingId) {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 6px 20px rgba(0,0,0,0.14)';
+                e.currentTarget.style.borderColor = 'rgba(255,149,0,0.5)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 1px 6px rgba(0,0,0,0.08)';
+              e.currentTarget.style.borderColor = isError ? 'rgba(255,59,48,0.5)' : 'transparent';
+            }}
+            onFocus={(e) => {
+              e.currentTarget.style.outline = '3px solid rgba(255,149,0,0.4)';
+              e.currentTarget.style.outlineOffset = '2px';
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.outline = 'none';
+            }}
           >
             {/* Image */}
-            <div className="h-28 sm:h-32 relative overflow-hidden">
+            <div style={{ height: 110, position: 'relative', overflow: 'hidden' }}>
               <img
                 src={demo.url}
                 alt={demo.name}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 loading="lazy"
+                style={{
+                  width: '100%', height: '100%', objectFit: 'cover',
+                  transition: 'transform 0.4s ease',
+                  display: 'block',
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.04)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
               />
-              {/* Gradient overlay */}
-              <div className={`absolute inset-0 bg-gradient-to-r ${demo.accent} opacity-0 group-hover:opacity-20 transition-opacity duration-300`} />
-              {/* Dark scrim for text */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent" />
+
+              {/* Dark scrim — left to right */}
+              <div style={{
+                position: 'absolute', inset: 0,
+                background: 'linear-gradient(to right, rgba(0,0,0,0.52) 0%, rgba(0,0,0,0.18) 55%, transparent 100%)',
+              }} />
 
               {/* Left text block */}
-              <div className="absolute left-4 top-0 bottom-0 flex items-center gap-3">
-                <span className="text-3xl drop-shadow-lg">{demo.emoji}</span>
-                <div className="text-left">
-                  <p className="text-white font-bold text-lg leading-tight drop-shadow-md">
+              <div style={{
+                position: 'absolute', left: 14, top: 0, bottom: 0,
+                display: 'flex', alignItems: 'center', gap: 10,
+              }}>
+                <span style={{ fontSize: 26, filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}>
+                  {demo.emoji}
+                </span>
+                <div style={{ textAlign: 'left' }}>
+                  <p style={{
+                    fontSize: 15, fontWeight: 700, color: 'white',
+                    margin: 0, lineHeight: 1.2,
+                    textShadow: '0 1px 4px rgba(0,0,0,0.3)',
+                    letterSpacing: -0.2,
+                  }}>
                     {demo.name}
                   </p>
-                  <p className="text-white/80 text-xs font-medium drop-shadow-sm">
+                  <p style={{
+                    fontSize: 11, color: 'rgba(255,255,255,0.75)',
+                    margin: '2px 0 0', fontWeight: 500,
+                  }}>
                     {demo.description}
                   </p>
                 </div>
               </div>
 
               {/* Right CTA */}
-              <div className="absolute right-4 top-0 bottom-0 flex items-center">
+              <div style={{
+                position: 'absolute', right: 14, top: 0, bottom: 0,
+                display: 'flex', alignItems: 'center',
+              }}>
                 {isLoading ? (
-                  <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <div style={{
+                    width: 28, height: 28,
+                    border: '2px solid rgba(255,255,255,0.4)',
+                    borderTopColor: 'white',
+                    borderRadius: '50%',
+                    animation: 'fv-spin 0.7s linear infinite',
+                  }} />
                 ) : isError ? (
                   <div className="fv-demo-error-icon">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                    <svg style={{ width: 13, height: 13 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5}
                         d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
                 ) : (
                   <div className="fv-demo-arrow">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                        d="M9 5l7 7-7 7" />
+                    <svg style={{ width: 13, height: 13 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                     </svg>
                   </div>
                 )}
@@ -128,7 +174,14 @@ function DemoGallery({ onSelectDemo }) {
 
             {/* Error label below image */}
             {isError && (
-              <div className="px-4 py-2 bg-red-50 text-xs text-red-600 font-medium text-left">
+              <div style={{
+                padding: '8px 14px',
+                background: '#fff5f5',
+                fontSize: 12,
+                color: '#c0392b',
+                fontWeight: 500,
+                textAlign: 'left',
+              }}>
                 Failed to load — check your connection and try again.
               </div>
             )}
@@ -136,7 +189,10 @@ function DemoGallery({ onSelectDemo }) {
         );
       })}
 
-      <p className="text-center text-xs text-gray-400 pt-1">
+      <p style={{
+        textAlign: 'center', fontSize: 11,
+        color: '#aeaeb2', marginTop: 4, letterSpacing: 0.1,
+      }}>
         Click any card to classify it instantly
       </p>
     </div>

@@ -11,7 +11,6 @@ function ImageUploader({ onImageUpload, loading, preview, onReset }) {
     if (e.type === 'dragenter' || e.type === 'dragover') {
       setDragActive(true);
     } else if (e.type === 'dragleave') {
-      // Only deactivate if leaving the drop zone itself, not a child
       if (!e.currentTarget.contains(e.relatedTarget)) {
         setDragActive(false);
       }
@@ -49,26 +48,37 @@ function ImageUploader({ onImageUpload, loading, preview, onReset }) {
   /* ---- Loading overlay ---- */
   if (loading && preview) {
     return (
-      <div className="fv-card relative overflow-hidden">
+      <div className="fv-card" style={{ position: 'relative', overflow: 'hidden', padding: 0 }}>
         <img
           src={preview}
           alt="Analyzing"
-          className="w-full max-h-80 object-contain rounded-xl opacity-40"
+          style={{
+            width: '100%', maxHeight: 300, objectFit: 'contain',
+            borderRadius: 20, opacity: 0.35, display: 'block',
+          }}
         />
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+        <div style={{
+          position: 'absolute', inset: 0,
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center', gap: 16,
+        }}>
           {/* Fork & knife spinner */}
           <div className="fv-spinner">
-            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-16 h-16">
-              <path d="M12 4v10a6 6 0 0012 0V4" stroke="#e8622a" strokeWidth="3" strokeLinecap="round"/>
-              <path d="M18 4v18M18 22v22" stroke="#e8622a" strokeWidth="3" strokeLinecap="round"/>
-              <path d="M30 4c0 0 6 4 6 10s-6 8-6 8v22" stroke="#e8622a" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: 52, height: 52 }}>
+              <path d="M12 4v10a6 6 0 0012 0V4" stroke="#FF9500" strokeWidth="3" strokeLinecap="round"/>
+              <path d="M18 4v18M18 22v22" stroke="#FF9500" strokeWidth="3" strokeLinecap="round"/>
+              <path d="M30 4c0 0 6 4 6 10s-6 8-6 8v22" stroke="#FF9500" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </div>
-          <div className="text-center">
-            <p className="text-lg font-bold text-warm-700">Analyzing your food...</p>
-            <p className="text-sm text-warm-500 mt-1">EfficientNetB2 is thinking</p>
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ fontSize: 16, fontWeight: 700, color: '#1c1c1e', margin: 0 }}>
+              Analyzing your food...
+            </p>
+            <p style={{ fontSize: 13, color: '#8e8e93', margin: '4px 0 0' }}>
+              EfficientNetB2 is thinking
+            </p>
           </div>
-          <div className="flex gap-1.5 mt-1">
+          <div style={{ display: 'flex', gap: 6 }}>
             <span className="fv-dot" style={{ animationDelay: '0s' }} />
             <span className="fv-dot" style={{ animationDelay: '0.2s' }} />
             <span className="fv-dot" style={{ animationDelay: '0.4s' }} />
@@ -81,24 +91,32 @@ function ImageUploader({ onImageUpload, loading, preview, onReset }) {
   /* ---- Preview state (not loading) ---- */
   if (preview) {
     return (
-      <div className="fv-card">
-        <div className="relative group">
+      <div className="fv-card" style={{ padding: 0, overflow: 'hidden' }}>
+        <div style={{ position: 'relative' }}>
           <img
             src={preview}
             alt="Food preview"
-            className="w-full max-h-80 object-contain rounded-xl shadow-inner border border-orange-100"
+            style={{
+              width: '100%', maxHeight: 300, objectFit: 'contain',
+              display: 'block', borderRadius: '20px 20px 0 0',
+            }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent rounded-xl pointer-events-none" />
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(to top, rgba(0,0,0,0.06) 0%, transparent 60%)',
+            borderRadius: '20px 20px 0 0',
+            pointerEvents: 'none',
+          }} />
         </div>
-        <button
-          onClick={onReset}
-          className="fv-btn-secondary w-full mt-4"
-        >
-          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-          </svg>
-          Try a Different Image
-        </button>
+        <div style={{ padding: '14px 16px' }}>
+          <button onClick={onReset} className="fv-btn-secondary">
+            <svg style={{ width: 15, height: 15, marginRight: 7 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+            </svg>
+            Try a Different Image
+          </button>
+        </div>
       </div>
     );
   }
@@ -120,26 +138,33 @@ function ImageUploader({ onImageUpload, loading, preview, onReset }) {
       >
         {/* Upload icon */}
         <div className={`fv-upload-icon ${dragActive ? 'fv-upload-icon--active' : ''}`}>
-          <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
+          <svg style={{ width: 26, height: 26 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75}
               d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
           </svg>
         </div>
 
-        <div className="mt-4 text-center">
+        <div style={{ marginTop: 16, textAlign: 'center' }}>
           {dragActive ? (
             <>
-              <p className="text-xl font-bold text-orange-600">Drop it here!</p>
-              <p className="text-sm text-orange-400 mt-1">Release to analyze</p>
+              <p style={{ fontSize: 17, fontWeight: 700, color: '#FF9500', margin: 0 }}>
+                Drop it here!
+              </p>
+              <p style={{ fontSize: 13, color: '#c47000', margin: '4px 0 0' }}>
+                Release to analyze
+              </p>
             </>
           ) : (
             <>
-              <p className="text-lg font-semibold text-gray-700">
-                Drag & drop your food image
+              <p style={{ fontSize: 15, fontWeight: 600, color: '#3a3a3c', margin: 0 }}>
+                Drag and drop your food image
               </p>
-              <p className="text-sm text-gray-500 mt-1">
+              <p style={{ fontSize: 13, color: '#8e8e93', margin: '5px 0 0' }}>
                 or{' '}
-                <span className="text-orange-500 font-semibold underline underline-offset-2 cursor-pointer hover:text-orange-600">
+                <span style={{
+                  color: '#FF9500', fontWeight: 600,
+                  textDecoration: 'underline', textUnderlineOffset: 2, cursor: 'pointer',
+                }}>
                   browse files
                 </span>
               </p>
@@ -147,8 +172,8 @@ function ImageUploader({ onImageUpload, loading, preview, onReset }) {
           )}
         </div>
 
-        <p className="mt-4 text-xs text-gray-400">
-          JPEG, PNG, WebP  &middot;  max 10 MB
+        <p style={{ marginTop: 14, fontSize: 11, color: '#aeaeb2', letterSpacing: 0.2 }}>
+          JPEG, PNG, WebP &middot; max 10 MB
         </p>
 
         <input
@@ -156,30 +181,39 @@ function ImageUploader({ onImageUpload, loading, preview, onReset }) {
           type="file"
           accept="image/*"
           onChange={handleChange}
-          className="hidden"
+          style={{ display: 'none' }}
         />
       </div>
 
       {/* Inline file error */}
       {fileError && (
-        <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3 animate-fv-fadein">
-          <svg className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <div className="animate-fv-fadein" style={{
+          marginTop: 12, padding: '10px 14px',
+          background: '#fff5f5',
+          border: '1px solid rgba(255,59,48,0.2)',
+          borderLeft: '3px solid #FF3B30',
+          borderRadius: 12,
+          display: 'flex', alignItems: 'flex-start', gap: 10,
+        }}>
+          <svg style={{ width: 15, height: 15, color: '#FF3B30', flexShrink: 0, marginTop: 1 }}
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <p className="text-sm text-red-700">{fileError}</p>
+          <p style={{ fontSize: 13, color: '#c0392b', margin: 0 }}>{fileError}</p>
         </div>
       )}
 
       {/* Food types hint */}
-      <div className="mt-5 flex justify-center gap-6">
+      <div style={{ marginTop: 18, display: 'flex', justifyContent: 'center', gap: 28 }}>
         {[
           { emoji: '🍕', label: 'Pizza' },
           { emoji: '🥩', label: 'Steak' },
           { emoji: '🍣', label: 'Sushi' },
         ].map(({ emoji, label }) => (
-          <div key={label} className="flex flex-col items-center gap-1">
-            <span className="text-2xl">{emoji}</span>
-            <span className="text-xs text-gray-400 font-medium">{label}</span>
+          <div key={label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
+            <span style={{ fontSize: 22 }}>{emoji}</span>
+            <span style={{ fontSize: 11, color: '#aeaeb2', fontWeight: 500 }}>{label}</span>
           </div>
         ))}
       </div>

@@ -1,51 +1,31 @@
 import React, { useEffect, useState } from 'react';
 
-/* Food metadata: emoji + gradient accent per class */
+/* Food metadata — clean iOS style, unified orange bars */
 const FOOD_META = {
   pizza: {
     emoji: '🍕',
     label: 'Pizza',
-    gradient: 'from-orange-500 to-red-500',
-    lightBg: 'bg-orange-50',
-    border: 'border-orange-200',
-    textAccent: 'text-orange-600',
-    barColor: 'fv-bar--pizza',
   },
   steak: {
     emoji: '🥩',
     label: 'Steak',
-    gradient: 'from-red-700 to-rose-500',
-    lightBg: 'bg-red-50',
-    border: 'border-red-200',
-    textAccent: 'text-red-700',
-    barColor: 'fv-bar--steak',
   },
   sushi: {
     emoji: '🍣',
     label: 'Sushi',
-    gradient: 'from-pink-500 to-fuchsia-500',
-    lightBg: 'bg-pink-50',
-    border: 'border-pink-200',
-    textAccent: 'text-pink-600',
-    barColor: 'fv-bar--sushi',
   },
   unknown: {
-    emoji: '🤔',
+    emoji: '?',
     label: 'Unknown',
-    gradient: 'from-gray-400 to-gray-600',
-    lightBg: 'bg-gray-50',
-    border: 'border-gray-200',
-    textAccent: 'text-gray-600',
-    barColor: 'fv-bar--unknown',
   },
 };
 
-/* Confidence badge styling */
+/* Confidence badge */
 function confidenceBadge(conf) {
-  if (conf > 0.9) return { text: 'Very High', cls: 'fv-badge--high' };
-  if (conf > 0.7) return { text: 'High', cls: 'fv-badge--med' };
-  if (conf > 0.5) return { text: 'Moderate', cls: 'fv-badge--low' };
-  return { text: 'Low', cls: 'fv-badge--very-low' };
+  if (conf > 0.9) return { text: 'Very High Confidence', cls: 'fv-badge--high' };
+  if (conf > 0.7) return { text: 'High Confidence',      cls: 'fv-badge--med' };
+  if (conf > 0.5) return { text: 'Moderate Confidence',  cls: 'fv-badge--low' };
+  return           { text: 'Low Confidence',             cls: 'fv-badge--very-low' };
 }
 
 /* Single animated confidence bar row */
@@ -61,27 +41,38 @@ function ConfidenceBar({ className, prob, meta, isTop, animate }) {
 
   const m = meta || FOOD_META.unknown;
   const pct = (prob * 100).toFixed(1);
+  const isUnknown = className === 'unknown';
 
   return (
     <div className={`fv-bar-row ${isTop ? 'fv-bar-row--top' : ''}`}>
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2">
-          <span className="text-xl leading-none">{m.emoji}</span>
-          <span className={`text-sm font-semibold capitalize ${isTop ? m.textAccent : 'text-gray-600'}`}>
-            {className}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ fontSize: 18, lineHeight: 1 }}>{m.emoji}</span>
+          <span style={{
+            fontSize: 14,
+            fontWeight: isTop ? 700 : 500,
+            color: isTop ? '#1c1c1e' : '#8e8e93',
+            textTransform: 'capitalize',
+          }}>
+            {m.label || className}
           </span>
-          {isTop && (
+          {isTop && !isUnknown && (
             <span className="fv-tag">Top</span>
           )}
         </div>
-        <span className={`text-sm font-bold tabular-nums ${isTop ? m.textAccent : 'text-gray-500'}`}>
+        <span style={{
+          fontSize: 14,
+          fontWeight: 700,
+          fontVariantNumeric: 'tabular-nums',
+          color: isTop && !isUnknown ? '#FF9500' : '#8e8e93',
+        }}>
           {pct}%
         </span>
       </div>
-      <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden shadow-inner">
+      <div className="fv-bar-track">
         <div
-          className={`h-3 rounded-full fv-bar-fill ${m.barColor}`}
-          style={{ width: `${width}%` }}
+          className={`fv-bar-fill ${isUnknown ? 'fv-bar--unknown' : 'fv-bar--pizza'}`}
+          style={{ width: `${width}%`, height: '100%' }}
         />
       </div>
     </div>
@@ -103,35 +94,47 @@ function ResultsDisplay({ result, onReset }) {
   const sorted = Object.entries(probabilities).sort((a, b) => b[1] - a[1]);
 
   return (
-    <div className={`mt-6 fv-results-card ${visible ? 'fv-results-card--visible' : ''}`}>
+    <div className={`fv-results-card ${visible ? 'fv-results-card--visible' : ''}`} style={{ marginTop: 16 }}>
 
-      {/* --- Hero prediction --- */}
-      <div className={`fv-hero-band ${topMeta.lightBg} ${topMeta.border}`}>
-        {/* Big emoji */}
+      {/* --- Hero prediction band --- */}
+      <div className="fv-hero-band" style={{
+        background: isUnknown
+          ? 'rgba(142,142,147,0.06)'
+          : 'rgba(255,149,0,0.06)',
+      }}>
         <div className="fv-hero-emoji">{topMeta.emoji}</div>
 
         {isUnknown ? (
-          <div className="text-center">
-            <h2 className="text-3xl font-extrabold text-gray-800 mt-3">
-              Hmm, not sure...
+          <div style={{ textAlign: 'center', marginTop: 12 }}>
+            <h2 style={{
+              fontSize: 26, fontWeight: 800, color: '#3a3a3c',
+              letterSpacing: -0.5, margin: 0,
+            }}>
+              Not quite sure...
             </h2>
-            <p className="text-base text-gray-500 mt-2 max-w-xs mx-auto">
+            <p style={{ fontSize: 14, color: '#8e8e93', marginTop: 6, maxWidth: 260, marginLeft: 'auto', marginRight: 'auto' }}>
               This doesn't look like pizza, steak, or sushi to our model.
             </p>
-            <span className={`mt-3 inline-block fv-badge ${badge.cls}`}>
-              Best guess: {(confidence * 100).toFixed(1)}% — below threshold
-            </span>
+            <div style={{ marginTop: 10 }}>
+              <span className={`fv-badge ${badge.cls}`}>
+                Best guess: {(confidence * 100).toFixed(1)}% — below threshold
+              </span>
+            </div>
           </div>
         ) : (
-          <div className="text-center">
-            <h2 className={`text-4xl font-extrabold capitalize mt-3 ${topMeta.textAccent}`}>
+          <div style={{ textAlign: 'center', marginTop: 12 }}>
+            <h2 style={{
+              fontSize: 32, fontWeight: 900, color: '#FF9500',
+              letterSpacing: -0.5, margin: 0, textTransform: 'capitalize',
+            }}>
               {topMeta.label}
             </h2>
-            <div className="flex items-center justify-center gap-3 mt-3 flex-wrap">
-              <span className={`fv-badge ${badge.cls}`}>
-                {badge.text} confidence
-              </span>
-              <span className={`text-2xl font-black tabular-nums ${topMeta.textAccent}`}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginTop: 10, flexWrap: 'wrap' }}>
+              <span className={`fv-badge ${badge.cls}`}>{badge.text}</span>
+              <span style={{
+                fontSize: 24, fontWeight: 900,
+                color: '#FF9500', fontVariantNumeric: 'tabular-nums',
+              }}>
                 {(confidence * 100).toFixed(1)}%
               </span>
             </div>
@@ -140,11 +143,14 @@ function ResultsDisplay({ result, onReset }) {
       </div>
 
       {/* --- Confidence bars --- */}
-      <div className="px-6 py-5">
-        <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">
+      <div style={{ padding: '20px 20px 4px' }}>
+        <p style={{
+          fontSize: 11, fontWeight: 600, color: '#8e8e93',
+          textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 14,
+        }}>
           All Predictions
-        </h3>
-        <div className="space-y-5">
+        </p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {sorted.map(([cls, prob], idx) => (
             <ConfidenceBar
               key={cls}
@@ -159,17 +165,27 @@ function ResultsDisplay({ result, onReset }) {
       </div>
 
       {/* --- Footer row --- */}
-      <div className="px-6 pb-6 pt-2 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <p className="text-xs text-gray-400">
-          Inference: <span className="font-semibold text-gray-600">{inference_time_ms.toFixed(0)} ms</span>
-          &nbsp;&middot;&nbsp;Model: EfficientNetB2
+      <div style={{
+        padding: '14px 20px 20px',
+        borderTop: '1px solid rgba(60,60,67,0.12)',
+        marginTop: 12,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: 12,
+        flexWrap: 'wrap',
+      }}>
+        <p style={{ fontSize: 12, color: '#aeaeb2', margin: 0 }}>
+          Inference:{' '}
+          <span style={{ fontWeight: 600, color: '#8e8e93' }}>
+            {inference_time_ms.toFixed(0)} ms
+          </span>
+          {' '}&middot;{' '}EfficientNetB2
         </p>
         {onReset && (
-          <button
-            onClick={onReset}
-            className="fv-btn-primary text-sm"
-          >
-            <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <button onClick={onReset} className="fv-btn-primary" style={{ fontSize: 13 }}>
+            <svg style={{ width: 14, height: 14, marginRight: 6 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                 d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
