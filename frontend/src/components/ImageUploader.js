@@ -1,5 +1,37 @@
 import React, { useRef, useState, useCallback } from 'react';
 
+/* Camera / image SVG icon */
+function CameraIcon() {
+  return (
+    <svg
+      style={{ width: 26, height: 26 }}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={1.75}
+        d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+      />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={1.75}
+        d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+      />
+    </svg>
+  );
+}
+
+/* ---- Food type indicators ---- */
+const FOOD_TYPES = [
+  { label: 'Pizza',  icon: '🍕' },
+  { label: 'Steak',  icon: '🥩' },
+  { label: 'Sushi',  icon: '🍣' },
+];
+
 function ImageUploader({ onImageUpload, loading, preview, onReset }) {
   const [dragActive, setDragActive] = useState(false);
   const [fileError, setFileError] = useState(null);
@@ -39,37 +71,42 @@ function ImageUploader({ onImageUpload, loading, preview, onReset }) {
       return;
     }
     if (file.size > 10 * 1024 * 1024) {
-      setFileError('Image must be smaller than 10MB. Please compress or resize it first.');
+      setFileError('Image must be smaller than 10 MB. Please compress or resize it first.');
       return;
     }
     onImageUpload(file);
   };
 
-  /* ---- Loading overlay ---- */
+  /* ---- Loading state ---- */
   if (loading && preview) {
     return (
-      <div className="fv-card" style={{ position: 'relative', overflow: 'hidden', padding: 0 }}>
+      <div
+        className="fv-card"
+        style={{ padding: 0, overflow: 'hidden', position: 'relative' }}
+      >
+        {/* Blurred preview */}
         <img
           src={preview}
           alt="Analyzing"
           style={{
-            width: '100%', maxHeight: 300, objectFit: 'contain',
-            borderRadius: 20, opacity: 0.35, display: 'block',
+            width: '100%',
+            maxHeight: 300,
+            objectFit: 'cover',
+            display: 'block',
+            opacity: 0.30,
+            filter: 'blur(2px)',
           }}
         />
+        {/* Overlay */}
         <div style={{
           position: 'absolute', inset: 0,
           display: 'flex', flexDirection: 'column',
           alignItems: 'center', justifyContent: 'center', gap: 16,
+          background: 'rgba(255,255,255,0.60)',
+          backdropFilter: 'blur(2px)',
+          WebkitBackdropFilter: 'blur(2px)',
         }}>
-          {/* Fork & knife spinner */}
-          <div className="fv-spinner">
-            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: 52, height: 52 }}>
-              <path d="M12 4v10a6 6 0 0012 0V4" stroke="#FF9500" strokeWidth="3" strokeLinecap="round"/>
-              <path d="M18 4v18M18 22v22" stroke="#FF9500" strokeWidth="3" strokeLinecap="round"/>
-              <path d="M30 4c0 0 6 4 6 10s-6 8-6 8v22" stroke="#FF9500" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </div>
+          <div className="fv-spinner-ring" />
           <div style={{ textAlign: 'center' }}>
             <p style={{ fontSize: 16, fontWeight: 700, color: '#1c1c1e', margin: 0 }}>
               Analyzing your food...
@@ -92,27 +129,34 @@ function ImageUploader({ onImageUpload, loading, preview, onReset }) {
   if (preview) {
     return (
       <div className="fv-card" style={{ padding: 0, overflow: 'hidden' }}>
+        {/* Image — full width, rounded top */}
         <div style={{ position: 'relative' }}>
           <img
             src={preview}
             alt="Food preview"
             style={{
-              width: '100%', maxHeight: 300, objectFit: 'contain',
-              display: 'block', borderRadius: '20px 20px 0 0',
+              width: '100%',
+              maxHeight: 300,
+              objectFit: 'cover',
+              display: 'block',
+              borderRadius: '20px 20px 0 0',
             }}
           />
+          {/* Subtle bottom gradient */}
           <div style={{
             position: 'absolute', inset: 0,
-            background: 'linear-gradient(to top, rgba(0,0,0,0.06) 0%, transparent 60%)',
+            background: 'linear-gradient(to top, rgba(0,0,0,0.08) 0%, transparent 50%)',
             borderRadius: '20px 20px 0 0',
             pointerEvents: 'none',
           }} />
         </div>
-        <div style={{ padding: '14px 16px' }}>
+        {/* Action row */}
+        <div style={{ padding: '16px 20px' }}>
           <button onClick={onReset} className="fv-btn-secondary">
             <svg style={{ width: 15, height: 15, marginRight: 7 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+              />
             </svg>
             Try a Different Image
           </button>
@@ -124,8 +168,9 @@ function ImageUploader({ onImageUpload, loading, preview, onReset }) {
   /* ---- Default drop zone ---- */
   return (
     <div className="fv-card">
+      {/* Drop zone */}
       <div
-        className={`fv-drop-zone ${dragActive ? 'fv-drop-zone--active' : ''}`}
+        className={`fv-drop-zone${dragActive ? ' fv-drop-zone--active' : ''}`}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
@@ -136,44 +181,40 @@ function ImageUploader({ onImageUpload, loading, preview, onReset }) {
         onKeyDown={(e) => e.key === 'Enter' && fileInputRef.current.click()}
         aria-label="Upload food image"
       >
-        {/* Upload icon */}
-        <div className={`fv-upload-icon ${dragActive ? 'fv-upload-icon--active' : ''}`}>
-          <svg style={{ width: 26, height: 26 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75}
-              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-          </svg>
+        {/* Icon */}
+        <div className="fv-upload-icon">
+          <CameraIcon />
         </div>
 
-        <div style={{ marginTop: 16, textAlign: 'center' }}>
-          {dragActive ? (
-            <>
-              <p style={{ fontSize: 17, fontWeight: 700, color: '#FF9500', margin: 0 }}>
-                Drop it here!
-              </p>
-              <p style={{ fontSize: 13, color: '#c47000', margin: '4px 0 0' }}>
-                Release to analyze
-              </p>
-            </>
-          ) : (
-            <>
-              <p style={{ fontSize: 15, fontWeight: 600, color: '#3a3a3c', margin: 0 }}>
-                Drag and drop your food image
-              </p>
-              <p style={{ fontSize: 13, color: '#8e8e93', margin: '5px 0 0' }}>
-                or{' '}
-                <span style={{
-                  color: '#FF9500', fontWeight: 600,
-                  textDecoration: 'underline', textUnderlineOffset: 2, cursor: 'pointer',
-                }}>
-                  browse files
-                </span>
-              </p>
-            </>
-          )}
-        </div>
+        {dragActive ? (
+          <>
+            <p style={{ fontSize: 17, fontWeight: 700, color: '#FF9500', margin: '0 0 4px' }}>
+              Drop it here!
+            </p>
+            <p style={{ fontSize: 13, color: '#c47000', margin: 0 }}>
+              Release to analyze
+            </p>
+          </>
+        ) : (
+          <>
+            <p style={{ fontSize: 17, fontWeight: 600, color: '#1c1c1e', margin: '0 0 4px' }}>
+              Drop your food photo here
+            </p>
+            <p style={{ fontSize: 14, color: '#8e8e93', margin: 0 }}>
+              or{' '}
+              <span style={{
+                color: '#FF9500', fontWeight: 600,
+                textDecoration: 'underline', textUnderlineOffset: 2,
+                cursor: 'pointer',
+              }}>
+                click to browse
+              </span>
+            </p>
+          </>
+        )}
 
-        <p style={{ marginTop: 14, fontSize: 11, color: '#aeaeb2', letterSpacing: 0.2 }}>
-          JPEG, PNG, WebP &middot; max 10 MB
+        <p style={{ fontSize: 12, color: '#aeaeb2', margin: '10px 0 0', letterSpacing: 0.1 }}>
+          Supports JPG, PNG up to 10 MB
         </p>
 
         <input
@@ -187,32 +228,61 @@ function ImageUploader({ onImageUpload, loading, preview, onReset }) {
 
       {/* Inline file error */}
       {fileError && (
-        <div className="animate-fv-fadein" style={{
+        <div style={{
           marginTop: 12, padding: '10px 14px',
           background: '#fff5f5',
-          border: '1px solid rgba(255,59,48,0.2)',
+          border: '1px solid rgba(255,59,48,0.20)',
           borderLeft: '3px solid #FF3B30',
           borderRadius: 12,
           display: 'flex', alignItems: 'flex-start', gap: 10,
+          animation: 'fadeInUp 0.35s cubic-bezier(0.25,0.46,0.45,0.94) forwards',
         }}>
-          <svg style={{ width: 15, height: 15, color: '#FF3B30', flexShrink: 0, marginTop: 1 }}
-            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            style={{ width: 14, height: 14, color: '#FF3B30', flexShrink: 0, marginTop: 1 }}
+            fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
           <p style={{ fontSize: 13, color: '#c0392b', margin: 0 }}>{fileError}</p>
         </div>
       )}
 
-      {/* Food types hint */}
-      <div style={{ marginTop: 18, display: 'flex', justifyContent: 'center', gap: 28 }}>
-        {[
-          { emoji: '🍕', label: 'Pizza' },
-          { emoji: '🥩', label: 'Steak' },
-          { emoji: '🍣', label: 'Sushi' },
-        ].map(({ emoji, label }) => (
-          <div key={label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
-            <span style={{ fontSize: 22 }}>{emoji}</span>
+      {/* Divider */}
+      <div style={{
+        height: 1,
+        background: 'rgba(60,60,67,0.08)',
+        margin: '20px 0 16px',
+      }} />
+
+      {/* Analyze button */}
+      <button
+        className="fv-btn-primary"
+        onClick={() => fileInputRef.current.click()}
+        style={{ gap: 8 }}
+      >
+        <svg style={{ width: 18, height: 18 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          />
+        </svg>
+        Analyze Photo
+      </button>
+
+      {/* Food type hints */}
+      <div style={{
+        marginTop: 16,
+        display: 'flex',
+        justifyContent: 'center',
+        gap: 24,
+      }}>
+        {FOOD_TYPES.map(({ label, icon }) => (
+          <div key={label} style={{
+            display: 'flex', flexDirection: 'column',
+            alignItems: 'center', gap: 3,
+          }}>
+            <span style={{ fontSize: 22 }}>{icon}</span>
             <span style={{ fontSize: 11, color: '#aeaeb2', fontWeight: 500 }}>{label}</span>
           </div>
         ))}

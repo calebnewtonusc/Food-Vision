@@ -6,40 +6,23 @@ import DemoGallery from './components/DemoGallery';
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 /* ------------------------------------------------------------------ */
-/*  Stat card — Apple card style, all orange accent                    */
+/*  StatCard                                                            */
 /* ------------------------------------------------------------------ */
 function StatCard({ value, label, sublabel }) {
   return (
     <div className="fv-stat-card">
       <div className="fv-stat-value">{value}</div>
       <div className="fv-stat-label">{label}</div>
-      {sublabel && (
-        <div style={{ fontSize: 11, color: '#aeaeb2', marginTop: 3 }}>{sublabel}</div>
-      )}
+      {sublabel && <div className="fv-stat-sublabel">{sublabel}</div>}
     </div>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/*  Inline tech pill                                                    */
+/*  TechPill                                                            */
 /* ------------------------------------------------------------------ */
 function TechPill({ children }) {
-  return (
-    <span style={{
-      display: 'inline-flex',
-      alignItems: 'center',
-      padding: '2px 10px',
-      background: 'rgba(255,149,0,0.10)',
-      color: '#c47000',
-      borderRadius: 980,
-      fontSize: 12,
-      fontWeight: 600,
-      marginRight: 6,
-      marginBottom: 6,
-    }}>
-      {children}
-    </span>
-  );
+  return <span className="fv-tech-pill">{children}</span>;
 }
 
 /* ------------------------------------------------------------------ */
@@ -96,16 +79,22 @@ function App() {
 
   return (
     <div className="fv-app-bg">
-      <main style={{ maxWidth: 1100, margin: '0 auto', padding: '0 16px 80px' }}>
+      <main style={{ maxWidth: 1100, margin: '0 auto', padding: '0 20px 100px' }}>
 
-        {/* ---- Disclaimer banner ---- */}
+        {/* ---- Disclaimer Banner ---- */}
         {!disclaimerDismissed && (
-          <div className="fv-disclaimer animate-fv-fadein" style={{ maxWidth: 900, margin: '20px auto 0' }}>
+          <div
+            className="fv-disclaimer"
+            style={{ maxWidth: 860, margin: '24px auto 0' }}
+          >
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-              <svg style={{ width: 16, height: 16, color: '#FF9500', flexShrink: 0, marginTop: 2 }}
-                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                style={{ width: 15, height: 15, color: '#FF9500', flexShrink: 0, marginTop: 1 }}
+                fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
               </svg>
               <div style={{ flex: 1 }}>
                 <span style={{ fontSize: 13, fontWeight: 600, color: '#1c1c1e' }}>
@@ -122,7 +111,7 @@ function App() {
                   color: '#8e8e93', padding: '0 2px', flexShrink: 0,
                   display: 'flex', alignItems: 'center',
                 }}
-                aria-label="Dismiss"
+                aria-label="Dismiss disclaimer"
               >
                 <svg style={{ width: 14, height: 14 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
@@ -132,51 +121,58 @@ function App() {
           </div>
         )}
 
-        {/* ---- Hero ---- */}
-        <div style={{ textAlign: 'center', padding: '56px 0 52px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 20, marginBottom: 16 }}>
-            <img
-              src="/foodvision-logo.png"
-              alt="Food Vision Logo"
-              style={{ width: 80, height: 80, objectFit: 'contain', filter: 'drop-shadow(0 4px 12px rgba(255,149,0,0.22))' }}
-            />
-            <div style={{ textAlign: 'left' }}>
-              <h1 className="fv-hero-title" style={{ fontSize: 'clamp(2.75rem, 6vw, 4.25rem)', lineHeight: 1.0, margin: 0 }}>
-                Food<span className="fv-hero-title-accent"> Vision</span>
-              </h1>
-              <p style={{ fontSize: 16, color: '#8e8e93', margin: '6px 0 0', fontWeight: 500, letterSpacing: -0.1 }}>
-                AI-Powered Food Classifier
-              </p>
-            </div>
-          </div>
-
-          <p style={{
-            fontSize: 16,
-            color: '#3a3a3c',
-            maxWidth: 480,
-            margin: '0 auto',
-            lineHeight: 1.55,
-            letterSpacing: -0.1,
-          }}>
-            Drop any food photo and our EfficientNetB2 model classifies it in milliseconds
-            — with{' '}
-            <span style={{ color: '#FF9500', fontWeight: 700 }}>97.20% accuracy</span>.
+        {/* ================================================================
+            HERO SECTION
+        ================================================================ */}
+        <div style={{
+          textAlign: 'center',
+          padding: '80px 0 64px',
+          maxWidth: 700,
+          margin: '0 auto',
+        }}>
+          {/* Eyebrow */}
+          <p className="fv-hero-eyebrow animate-in delay-1">
+            Computer Vision &middot; PyTorch &middot; EfficientNetB2
           </p>
+
+          {/* Title */}
+          <h1 className="fv-hero-title animate-in delay-2" style={{ margin: '16px 0' }}>
+            Food<span className="fv-hero-accent">Vision</span>
+          </h1>
+
+          {/* Subtitle */}
+          <p className="fv-hero-sub animate-in delay-3" style={{ margin: '20px auto' }}>
+            Upload a photo of any food. Get identified in under a second with 97.2% accuracy.
+          </p>
+
+          {/* Accuracy badge */}
+          <div className="animate-in delay-4" style={{ marginTop: 20 }}>
+            <span className="fv-accuracy-badge">
+              <svg style={{ width: 12, height: 12 }} fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              97.20% Accurate &middot; EfficientNetB2
+            </span>
+          </div>
         </div>
 
-        {/* ---- Try It / Examples ---- */}
-        <div style={{ marginBottom: 72 }}>
+        {/* ================================================================
+            UPLOAD + RESULTS / DEMO SECTION
+        ================================================================ */}
+        <div style={{ marginBottom: 80 }}>
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: 32,
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: 28,
             alignItems: 'start',
           }}>
-            {/* Left: Uploader + Results */}
+
+            {/* Left column: Uploader + error + results */}
             <div>
-              <div style={{ marginBottom: 12 }}>
-                <span className="fv-section-label">Try It Now</span>
-              </div>
+              <span className="fv-section-eyebrow">Try It Now</span>
 
               <ImageUploader
                 onImageUpload={handleImageUpload}
@@ -187,14 +183,17 @@ function App() {
 
               {/* API error state */}
               {error && !loading && (
-                <div className="fv-error-card animate-fv-fadein" style={{ marginTop: 12 }}>
+                <div className="fv-error-card" style={{ marginTop: 12 }}>
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-                    <svg style={{ width: 16, height: 16, color: '#FF3B30', flexShrink: 0, marginTop: 2 }}
-                      fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg
+                      style={{ width: 15, height: 15, color: '#FF3B30', flexShrink: 0, marginTop: 1 }}
+                      fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    >
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
                     </svg>
-                    <div>
+                    <div style={{ flex: 1 }}>
                       <p style={{ fontSize: 13, fontWeight: 700, color: '#c0392b', margin: 0 }}>
                         Something went wrong
                       </p>
@@ -225,164 +224,223 @@ function App() {
               )}
             </div>
 
-            {/* Right: Demo gallery */}
+            {/* Right column: Demo gallery */}
             <div>
-              <div style={{ marginBottom: 8 }}>
-                <span className="fv-section-label">Quick Examples</span>
-              </div>
-              <p style={{ fontSize: 13, color: '#8e8e93', marginBottom: 16, marginTop: 4 }}>
-                No image handy? Click a card to classify a sample photo.
+              <span className="fv-section-eyebrow">Quick Examples</span>
+              <p style={{ fontSize: 13, color: '#8e8e93', marginBottom: 14, marginTop: 4 }}>
+                No image handy? Click a sample to classify it instantly.
               </p>
               <DemoGallery onSelectDemo={handleImageUpload} />
             </div>
+
           </div>
         </div>
 
-        {/* ---- Performance Stats ---- */}
-        <div style={{ marginBottom: 72 }}>
-          <div style={{ textAlign: 'center', marginBottom: 32 }}>
-            <span className="fv-section-label">Model Performance</span>
-            <p style={{ fontSize: 14, color: '#8e8e93', marginTop: 6, maxWidth: 480, marginLeft: 'auto', marginRight: 'auto' }}>
-              Evaluated on 750 held-out test images using progressive fine-tuning and
-              discriminative learning rates.
+        {/* ================================================================
+            PERFORMANCE STATS SECTION
+        ================================================================ */}
+        <div style={{ marginBottom: 80 }}>
+          <div style={{ textAlign: 'center', marginBottom: 40 }}>
+            <span className="fv-section-eyebrow">Model Performance</span>
+            <h2 className="fv-section-title">Built on Real Accuracy</h2>
+            <p style={{
+              fontSize: 15,
+              color: '#8e8e93',
+              maxWidth: 480,
+              margin: '0 auto',
+              lineHeight: 1.55,
+            }}>
+              Evaluated on 750 held-out test images using progressive fine-tuning
+              and discriminative learning rates.
             </p>
           </div>
 
           {/* Stat cards */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-            gap: 12,
-            maxWidth: 700,
-            margin: '0 auto 48px',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+            gap: 14,
+            maxWidth: 720,
+            margin: '0 auto 52px',
           }}>
-            <StatCard value="97.20%" label="Accuracy" sublabel="Top-1" />
-            <StatCard value="100%" label="Top-3" sublabel="All classes" />
-            <StatCard value="0.972" label="F1 Score" sublabel="Weighted avg" />
-            <StatCard value="0.015" label="ECE" sublabel="Calibration error" />
+            <StatCard value="97.20%" label="Accuracy" sublabel="Top-1 Recognition" />
+            <StatCard value="100%"   label="Top-3 Accuracy" sublabel="Always in top 3" />
+            <StatCard value="0.972"  label="F1 Score" sublabel="Near-perfect balance" />
+            <StatCard value="0.015"  label="ECE" sublabel="Calibration error" />
           </div>
 
           {/* Visualizations */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
             gap: 16,
-            maxWidth: 860,
+            maxWidth: 880,
             margin: '0 auto',
           }}>
             <div className="fv-viz-card">
               <h3 style={{
-                fontSize: 14, fontWeight: 700, color: '#1c1c1e',
-                marginBottom: 16, textAlign: 'center', letterSpacing: -0.2,
+                fontSize: 15, fontWeight: 700, color: '#1c1c1e',
+                marginBottom: 16, textAlign: 'center', letterSpacing: -0.3,
               }}>
                 Confusion Matrix
               </h3>
               <img
                 src="/confusion_matrix.png"
                 alt="Confusion Matrix"
-                style={{ width: '100%', height: 'auto', borderRadius: 12 }}
+                style={{ width: '100%', height: 'auto', borderRadius: 12, display: 'block' }}
               />
-              <p style={{ fontSize: 11, color: '#aeaeb2', marginTop: 10, textAlign: 'center' }}>
+              <p style={{ fontSize: 11, color: '#aeaeb2', marginTop: 10, textAlign: 'center', margin: '10px 0 0' }}>
                 Predictions vs. true labels across all 3 classes
               </p>
             </div>
             <div className="fv-viz-card">
               <h3 style={{
-                fontSize: 14, fontWeight: 700, color: '#1c1c1e',
-                marginBottom: 16, textAlign: 'center', letterSpacing: -0.2,
+                fontSize: 15, fontWeight: 700, color: '#1c1c1e',
+                marginBottom: 16, textAlign: 'center', letterSpacing: -0.3,
               }}>
                 Calibration Analysis
               </h3>
               <img
                 src="/reliability_diagram.png"
                 alt="Reliability Diagram"
-                style={{ width: '100%', height: 'auto', borderRadius: 12 }}
+                style={{ width: '100%', height: 'auto', borderRadius: 12, display: 'block' }}
               />
-              <p style={{ fontSize: 11, color: '#aeaeb2', marginTop: 10, textAlign: 'center' }}>
-                Well-calibrated model — ECE of 0.0147
+              <p style={{ fontSize: 11, color: '#aeaeb2', marginTop: 10, textAlign: 'center', margin: '10px 0 0' }}>
+                Well-calibrated model &mdash; ECE of 0.0147
               </p>
             </div>
           </div>
         </div>
 
-        {/* ---- Technical Details ---- */}
-        <div style={{ maxWidth: 720, margin: '0 auto 72px' }}>
-          <div className="fv-tech-card">
-            <h2 style={{
-              fontSize: 18, fontWeight: 800, color: '#1c1c1e',
-              marginBottom: 20, textAlign: 'center', letterSpacing: -0.4,
-            }}>
-              Technical Details
-            </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 24 }}>
-              <div>
-                <h3 style={{
-                  fontSize: 12, fontWeight: 700, color: '#8e8e93',
-                  textTransform: 'uppercase', letterSpacing: 0.5,
-                  marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6,
+        {/* ================================================================
+            TECHNICAL DETAILS SECTION
+        ================================================================ */}
+        <div style={{ maxWidth: 800, margin: '0 auto 80px' }}>
+          <div style={{ textAlign: 'center', marginBottom: 32 }}>
+            <span className="fv-section-eyebrow">Under the Hood</span>
+            <h2 className="fv-section-title">Technical Details</h2>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: 16,
+          }}>
+            {/* Architecture card */}
+            <div className="fv-tech-card">
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
+                <div style={{
+                  width: 32, height: 32, borderRadius: 8,
+                  background: 'rgba(255,149,0,0.10)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
-                  <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#FF9500', display: 'inline-block' }} />
+                  <svg style={{ width: 17, height: 17, color: '#FF9500' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75}
+                      d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+                <h3 style={{ fontSize: 17, fontWeight: 700, color: '#1c1c1e', margin: 0 }}>
                   Architecture
                 </h3>
-                <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                  {[
-                    'EfficientNetB2 backbone',
-                    'ImageNet pre-trained',
-                    'Progressive fine-tuning',
-                    'Discriminative learning rates',
-                    '3-class classifier head',
-                  ].map((item) => (
-                    <li key={item} style={{
-                      fontSize: 13, color: '#3a3a3c', paddingBottom: 6,
-                      display: 'flex', alignItems: 'baseline', gap: 7,
-                    }}>
-                      <span style={{ color: '#FF9500', fontSize: 10, flexShrink: 0 }}>&#9679;</span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
               </div>
-              <div>
-                <h3 style={{
-                  fontSize: 12, fontWeight: 700, color: '#8e8e93',
-                  textTransform: 'uppercase', letterSpacing: 0.5,
-                  marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6,
-                }}>
-                  <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#FF9500', display: 'inline-block' }} />
-                  Training Details
-                </h3>
-                <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                  {[
-                    '750 train images per class',
-                    '250 test images per class',
-                    'Enhanced data augmentation',
-                    '70% confidence threshold',
-                    'PyTorch + torchvision',
-                  ].map((item) => (
-                    <li key={item} style={{
-                      fontSize: 13, color: '#3a3a3c', paddingBottom: 6,
-                      display: 'flex', alignItems: 'baseline', gap: 7,
-                    }}>
-                      <span style={{ color: '#FF9500', fontSize: 10, flexShrink: 0 }}>&#9679;</span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {[
+                  'EfficientNetB2 backbone',
+                  'ImageNet pre-trained weights',
+                  'Progressive fine-tuning strategy',
+                  'Discriminative learning rates',
+                  '3-class classifier head',
+                ].map((item) => (
+                  <li key={item} style={{
+                    fontSize: 14, color: '#3a3a3c',
+                    display: 'flex', alignItems: 'baseline', gap: 8,
+                  }}>
+                    <span style={{
+                      width: 5, height: 5, borderRadius: '50%',
+                      background: '#FF9500', flexShrink: 0,
+                      display: 'inline-block', marginTop: 5,
+                    }} />
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </div>
 
-            <div style={{ marginTop: 20, borderTop: '1px solid rgba(60,60,67,0.12)', paddingTop: 16 }}>
-              <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                {['PyTorch', 'EfficientNetB2', 'FastAPI', 'React', 'Vercel'].map((t) => (
-                  <TechPill key={t}>{t}</TechPill>
-                ))}
+            {/* Training card */}
+            <div className="fv-tech-card">
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
+                <div style={{
+                  width: 32, height: 32, borderRadius: 8,
+                  background: 'rgba(255,149,0,0.10)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <svg style={{ width: 17, height: 17, color: '#FF9500' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75}
+                      d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"
+                    />
+                  </svg>
+                </div>
+                <h3 style={{ fontSize: 17, fontWeight: 700, color: '#1c1c1e', margin: 0 }}>
+                  Training
+                </h3>
               </div>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {[
+                  '750 train images per class',
+                  '250 held-out test images per class',
+                  'Enhanced data augmentation',
+                  '70% confidence threshold',
+                  'PyTorch + torchvision',
+                ].map((item) => (
+                  <li key={item} style={{
+                    fontSize: 14, color: '#3a3a3c',
+                    display: 'flex', alignItems: 'baseline', gap: 8,
+                  }}>
+                    <span style={{
+                      width: 5, height: 5, borderRadius: '50%',
+                      background: '#FF9500', flexShrink: 0,
+                      display: 'inline-block', marginTop: 5,
+                    }} />
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </div>
+          </div>
+
+          {/* Tech stack pills */}
+          <div style={{
+            marginTop: 16,
+            background: '#ffffff',
+            borderRadius: 16,
+            border: '0.5px solid rgba(60,60,67,0.10)',
+            boxShadow: '0 2px 16px rgba(0,0,0,0.08)',
+            padding: '20px 24px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            flexWrap: 'wrap',
+          }}>
+            <span style={{ fontSize: 12, fontWeight: 600, color: '#8e8e93', marginRight: 4, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              Stack
+            </span>
+            {['PyTorch', 'EfficientNetB2', 'FastAPI', 'React', 'Vercel', 'Python'].map((t) => (
+              <TechPill key={t}>{t}</TechPill>
+            ))}
           </div>
         </div>
 
-        {/* ---- Footer ---- */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingBottom: 16 }}>
+        {/* ================================================================
+            FOOTER
+        ================================================================ */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 12,
+          paddingBottom: 16,
+        }}>
           <a
             href="https://calebnewton.me"
             target="_blank"
@@ -391,15 +449,18 @@ function App() {
           >
             <img
               src="/caleb-usc.jpg"
-              alt="Caleb Newton at USC"
+              alt="Caleb Newton"
               style={{
-                width: 36, height: 36, borderRadius: '50%',
+                width: 34, height: 34, borderRadius: '50%',
                 objectFit: 'cover', objectPosition: 'center 30%',
-                border: '2px solid rgba(255,149,0,0.3)',
+                border: '2px solid rgba(255,149,0,0.28)',
               }}
             />
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 1 }}>
-              <span style={{ fontSize: 10, color: '#aeaeb2', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <span style={{
+                fontSize: 10, color: '#aeaeb2',
+                textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600,
+              }}>
                 Built by
               </span>
               <span style={{ fontSize: 14, color: '#1c1c1e', fontWeight: 700, letterSpacing: -0.2 }}>
@@ -407,6 +468,9 @@ function App() {
               </span>
             </div>
           </a>
+          <p style={{ fontSize: 11, color: '#aeaeb2', margin: 0, letterSpacing: 0.1 }}>
+            &copy; 2025 FoodVision &middot; EfficientNetB2 &middot; PyTorch
+          </p>
         </div>
 
       </main>
