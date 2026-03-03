@@ -633,6 +633,55 @@
         .fv-stat-value { font-size: 32px; }
         .fv-drop-zone { height: 180px; }
       }
+
+      /* ============================================================
+         WHIRL SPINNERS (whirl.netlify.app)
+      ============================================================ */
+      @keyframes whirl-spin {
+        to { transform: rotate(360deg); }
+      }
+
+      /* Arc – single top-stroke arc */
+      .whirl-arc::before {
+        animation: whirl-spin 0.65s infinite linear;
+        border-radius: 100%;
+        border-top: 4px solid var(--ios-orange);
+        content: '';
+        display: block;
+        height: 44px;
+        width: 44px;
+        filter: drop-shadow(0 0 6px rgba(255,149,0,0.30));
+      }
+
+      /* Basic – two-tone ring */
+      .whirl-basic::before {
+        content: '';
+        display: block;
+        height: 44px;
+        width: 44px;
+        animation: whirl-spin 0.65s infinite linear;
+        border: 4px rgba(255,149,0,0.20) solid;
+        border-top-color: var(--ios-orange);
+        border-radius: 100%;
+        filter: drop-shadow(0 0 6px rgba(255,149,0,0.25));
+      }
+
+      /* Typed.js cursor blink */
+      .typed-cursor {
+        color: var(--ios-orange);
+        font-weight: 300;
+        animation: typed-blink 0.7s infinite;
+      }
+      @keyframes typed-blink {
+        0%, 100% { opacity: 1; }
+        50%       { opacity: 0; }
+      }
+
+      /* ProgressBar.js text override */
+      .progressbar-text {
+        font-weight: 900 !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif !important;
+      }
     </style>
   </head>
   <body>

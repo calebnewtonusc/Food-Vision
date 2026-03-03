@@ -1,4 +1,40 @@
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
+import Typed from 'typed.js';
+
+/* ---- Typed.js animated upload prompt ---- */
+function TypedPrompt() {
+  const elRef = useRef(null);
+
+  useEffect(() => {
+    if (!elRef.current) return;
+    const typed = new Typed(elRef.current, {
+      strings: [
+        'Drop a food image here.',
+        'Supports pizza, steak, or sushi.',
+        'Get instant AI predictions.',
+        'EfficientNetB2 under the hood.',
+      ],
+      typeSpeed: 45,
+      backSpeed: 25,
+      backDelay: 2000,
+      loop: true,
+      showCursor: true,
+      cursorChar: '|',
+    });
+    return () => typed.destroy();
+  }, []);
+
+  return (
+    <p style={{
+      fontSize: 14,
+      color: '#8e8e93',
+      margin: '6px 0 0',
+      minHeight: '1.4rem',
+    }}>
+      <span ref={elRef} />
+    </p>
+  );
+}
 
 /* Camera / image SVG icon */
 function CameraIcon() {
@@ -106,7 +142,7 @@ function ImageUploader({ onImageUpload, loading, preview, onReset }) {
           backdropFilter: 'blur(2px)',
           WebkitBackdropFilter: 'blur(2px)',
         }}>
-          <div className="fv-spinner-ring" />
+          <div className="whirl-basic" />
           <div style={{ textAlign: 'center' }}>
             <p style={{ fontSize: 16, fontWeight: 700, color: '#1c1c1e', margin: 0 }}>
               Analyzing your food...
@@ -197,10 +233,11 @@ function ImageUploader({ onImageUpload, loading, preview, onReset }) {
           </>
         ) : (
           <>
-            <p style={{ fontSize: 17, fontWeight: 600, color: '#1c1c1e', margin: '0 0 4px' }}>
+            <p style={{ fontSize: 17, fontWeight: 600, color: '#1c1c1e', margin: '0 0 2px' }}>
               Drop your food photo here
             </p>
-            <p style={{ fontSize: 14, color: '#8e8e93', margin: 0 }}>
+            <TypedPrompt />
+            <p style={{ fontSize: 13, color: '#8e8e93', margin: '6px 0 0' }}>
               or{' '}
               <span style={{
                 color: '#FF9500', fontWeight: 600,

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { Line } from 'progressbar.js';
 
 /* ------------------------------------------------------------------ */
 /*  Food metadata                                                        */
@@ -21,20 +22,58 @@ function getConfidenceBadge(conf) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  ConfidenceBar                                                        */
+/*  ConfidenceBar — progressbar.js animated line                        */
 /* ------------------------------------------------------------------ */
 function ConfidenceBar({ className, prob, isTop, animate }) {
-  const [barWidth, setBarWidth] = useState(0);
+  const containerRef = useRef(null);
+  const barInstanceRef = useRef(null);
   const meta = FOOD_META[className] || FOOD_META.unknown;
   const isUnknown = className === 'unknown';
   const pct = (prob * 100).toFixed(1);
 
+  const barColor = isUnknown ? '#aeaeb2' : (isTop ? '#FF9500' : '#d1d1d6');
+
   useEffect(() => {
-    if (animate) {
-      const t = setTimeout(() => setBarWidth(prob * 100), 80);
-      return () => clearTimeout(t);
+    if (!containerRef.current) return;
+
+    // Destroy any previous instance
+    if (barInstanceRef.current) {
+      barInstanceRef.current.destroy();
+      barInstanceRef.current = null;
     }
-  }, [animate, prob]);
+
+    const bar = new Line(containerRef.current, {
+      color: barColor,
+      strokeWidth: 6,
+      trailColor: 'rgba(60,60,67,0.08)',
+      trailWidth: 6,
+      duration: animate ? 900 : 0,
+      easing: 'easeOut',
+      svgStyle: {
+        width: '100%',
+        height: '6px',
+        borderRadius: '980px',
+        overflow: 'visible',
+      },
+    });
+
+    if (animate) {
+      const t = setTimeout(() => bar.animate(prob), 80);
+      barInstanceRef.current = bar;
+      return () => {
+        clearTimeout(t);
+        bar.destroy();
+        barInstanceRef.current = null;
+      };
+    } else {
+      bar.set(prob);
+      barInstanceRef.current = bar;
+      return () => {
+        bar.destroy();
+        barInstanceRef.current = null;
+      };
+    }
+  }, [animate, prob, barColor]);
 
   return (
     <div className={`fv-bar-row${isTop ? ' fv-bar-row--top' : ''}`}>
@@ -81,13 +120,8 @@ function ConfidenceBar({ className, prob, isTop, animate }) {
         </span>
       </div>
 
-      {/* Bar */}
-      <div className="fv-bar-track">
-        <div
-          className={`fv-bar-fill${isUnknown ? ' fv-bar-fill--muted' : ''}`}
-          style={{ width: `${barWidth}%` }}
-        />
-      </div>
+      {/* ProgressBar.js line container */}
+      <div ref={containerRef} style={{ height: 6 }} />
     </div>
   );
 }
